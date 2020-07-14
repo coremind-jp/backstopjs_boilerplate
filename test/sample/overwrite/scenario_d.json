@@ -1,0 +1,7 @@
+{
+    "all": {
+        "$subScenarios": [
+            "for_endpoint_overwrite"
+        ]
+    }
+}

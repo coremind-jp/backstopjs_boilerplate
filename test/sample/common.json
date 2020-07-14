@@ -1,0 +1,44 @@
+{
+    "all": {
+        "$subScenarios": [
+            "for_common_all",
+            "for_common_merge",
+            "for_common_overwrite_first",
+            "for_common_overwrite_second"
+        ],
+        "__defined_at_common_all": true,
+        "__merge_me": ["defined_at_common"],
+        "__overwrite_me": "overwrite_by_common",
+        "__overwrite_me_with_common": "overwrite_by_common"
+    },
+    "desktop": {
+        "userAgent": "",
+        "viewports": [
+            {
+                "label": "desktop",
+                "width": 1024,
+                "height": 768
+            }
+        ],
+
+        "$subScenarios": [
+            "for_common_desktop"
+        ],
+        "__defined_at_common_viewport": "desktop"
+    },
+    "phone": {
+        "userAgent": "",
+        "viewports": [
+            {
+                "label": "phone",
+                "width": 1024,
+                "height": 768
+            }
+        ],
+
+        "$subScenarios": [
+            "for_common_phone"
+        ],
+        "__defined_at_common_viewport": "phone"
+   }
+}

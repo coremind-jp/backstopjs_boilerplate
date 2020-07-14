@@ -1,0 +1,5 @@
+{
+    "__merge_me": ["defined_at_common_sub"],
+    "__replace_me": ["defined_at_common_sub"],
+    "__remove_me": ["defined_at_common_sub"]
+}

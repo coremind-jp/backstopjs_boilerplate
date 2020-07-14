@@ -1,0 +1,9 @@
+{
+    "all": {
+        "$subScenarios": [
+            "for_endpoint_overwrite"
+        ],
+        "__overwrite_me": "overwrite_by_endpoint",
+        "__overwrite_me_with_endpoint": "overwrite_by_endpoint"
+    }
+}

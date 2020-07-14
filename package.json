@@ -1,0 +1,38 @@
+{
+  "name": "backstopjs_boilerplate",
+  "version": "0.9.0",
+  "description": "boilerplate for backstopjs",
+  "keywords": [
+    "boilerplate",
+    "backstopjs"
+  ],
+  "author": "Hirotaka Nakahara <nakahara@coremind.jp> (https://coremind.jp)",
+  "license": "MIT",
+  "homepage": "https://github.com/coremind-jp/backstopjs_boilerplate",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coremind-jp/backstopjs_boilerplate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/coremind-jp/backstopjs_boilerplate/issues"
+  },  
+  "bin": {
+    "bsbl": "boilerplate/runner.js"
+  },
+  "scripts": {
+    "init": "node boilerplate/runner.js init",
+    "reference": "node boilerplate/runner.js reference",
+    "test": "node boilerplate/runner.js test",
+    "approve": "node boilerplate/runner.js approve",
+    "jest": "jest"
+  },
+  "devDependencies": {
+    "backstopjs": "^5.0.1",
+    "jest": "^26.1.0",
+    "lodash": "^4.17.17"
+  },
+  "dependencies": {
+    "backstopjs": "^5.0.1",
+    "lodash": "^4.17.17"
+  }
+}

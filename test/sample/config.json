@@ -1,0 +1,28 @@
+{
+  "templateType": "min",
+  "viewports": [
+    "desktop",
+    "phone"
+  ],
+  "test": "http://localhost:8080",
+  "reference": "http://localhost:8080",
+  "endpoints": {
+    "index": [
+      "scenario_a",
+      "scenario_b"
+    ],
+    "/overwrite": [
+      "scenario_c",
+      "scenario_d"
+    ],
+    "/merge": [
+      "scenario_e"
+    ],
+    "/script": [
+      "scenario_f",
+      "scenario_g"
+    ]
+  },
+  "skipOnReference": {
+  }
+}

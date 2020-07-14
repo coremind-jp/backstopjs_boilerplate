@@ -1,0 +1,19 @@
+{
+    "all": {
+        "$subScenarios": [
+            "for_endpoint_all"
+        ]
+    },
+    "desktop": {
+        "$scripts": [],
+        "$subScenarios": [
+            "for_endpoint_desktop"
+        ]
+    },
+    "phone": {
+        "$scripts": [],
+        "$subScenarios": [
+            "for_endpoint_phone"
+        ]
+    }
+}
