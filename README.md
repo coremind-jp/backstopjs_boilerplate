@@ -1,299 +1,420 @@
-# backstopjs用ボイラープレート
+# Boilerplate for backstopjs
 
-## 動機
+## Getting started
+
+__パッケージインストール__
+
+`npm i -D backstopjs_boilerplate`
+
+__設定ファイル作成__
+
+[ここを参照](#conf)
+
+__package.json 編集__
+```json
+"scripts": {
+  "bsbl-init": "bsbl path/to/config/your_config.json init",
+  "bsbl-reference": "bsbl path/to/config/your_config.json reference",
+  "bsbl-test": "bsbl path/to/config/your_config.json test",
+  "bsbl-approve": "bsbl approve"
+},
+```
+
+__テンプレート生成__
+
+`npm run bsbl-init`
+
+__common.json 編集__
+```json
+"tablet": {
++   "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0 Safari/605.1.15",
+    "viewports": [
+        {
+            "label": "tablet",
++            "width": 1024,
++           "height": 1366
+        }
+    ]
+},
+"phone": {
++   "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0 Mobile/15E148 Safari/604.1",
+    "viewports": [
+        {
+            "label": "phone",
++           "width": 414,
++           "height": 896
+        }
+    ]
+}
+```
+
+__テスト実行__
+
+`npm run bsbl-test`
+
+## 目次
+
+TODO
+
+## :hammer: 動機
 backstopjsは非常にシンプルなインターフェースで簡単にビジュアルレグレッションテストを導入できるライブラリだったので自分が仕事で担当しているサイトに使ってみた。しかしシンプル過ぎて大量のページや複雑さのあるシナリオが必要なケースでは規則やヘルパーが無さ過ぎて辛い。ので色々と痒い所に手を届かせる規則と機能を追加した。
   
-## 問題点
-### 問題1. シナリオを作るのがめんどくさい
+## :scream: 問題点
+#### シナリオを作るのがめんどくさい
 ランディングページの様な数ページ程度の規模のサイトであれば手動でも良いが、二桁超えた辺りでシナリオの動的生成がしたくなってくる。
   
-### 問題2. シナリオの再利用性が考慮されていない
+#### シナリオの再利用性が考慮されていない
 問い合わせフォームの確認・完了のような何かの操作の結果で表示できる状態があったとして、その操作のパターンが途中で分岐しそれぞれに対してテストを実施したい場合、jsonを丸コピするような原始的な方法しか用意されていない。これは長期的に見ると全体を把握することが困難になる気がしてならないしコピーした箇所を仕様変更などで書き換えなければならなくなった時に死ねる。
   
-### 問題3. シナリオの見通しが悪い
-backstopjsでは定義されたviewport毎にスクリーンショットを撮ってくれるがそれ以上のことはできない。もしviewport毎に異なる操作が必要であればそれは別のシナリオを作らなければならない。viewport毎にサイト上で表示されるものや実行される処理が違う事は往々にしてあるので基本として個別にシナリオを書けないと辛い。しかし単純にシナリオを増やしていく形をとると __問題1__ を誘発する原因になる。その上 __問題2__ があるので運用もし難くなる一方となる。
+#### シナリオの見通しが悪い
+backstopjsでは定義されたビューポート毎にスクリーンショットを撮ってくれるがそれ以上のことはできない。もしビューポート毎に異なる操作が必要であればそれは別のシナリオを作らなければならない。ビューポート毎にサイト上で表示されるものや実行される処理が違う事は往々にしてあるので基本として個別にシナリオを書けないと辛い。しかし単純にシナリオを増やしていく形をとると __問題1__ を誘発する原因になる。その上 __問題2__ があるので運用もし難くなる一方となる。
   
-### 問題4. engine_scriptsの呼び出しもシナリオから制御したい
+#### engine_scriptsの呼び出しもシナリオから制御したい
 backstopjs自体が提供するヘッドレスブラウザに対する操作は非常に少なく恐らく作ってる側もビジュアルレグレッションでカバーするテストはこのくらいの機能で実現できるものであるべき。というようなスタンスな気がする。しかし実際に使ってみるとWEBベースのreport（画像比較）が秀逸で安心感が凄いのでどんどん網羅的にテストしたくなってくる。しかし、いざ独自セレクタと関数による拡張をしてみるとそこには何の規則もないのでコードとシナリオの関係性が把握し難く保守が難しいと感じた。
   
   
-## 拡張した機能
+## :sunglasses: 拡張した機能
 ### 機能1. シナリオの自動生成
-全てのエンドポイントに対するテンプレートなシナリオを設定ファイル(site.json)とコマンドで自動生成する。単純にスクリーンショットを取るだけの場合はこれだけでテストが行える。viewportsは任意の名称(label)を持たせることができる。尚、この機能についてはテンプレートが生成されれば良いという軽いノリで実装したのでマイグレーションなどという便利なオプションは一切用意していない。
-#### コマンド
-`node ./boilerplate/core/generate.js`
-#### 設定ファイル (site.json)
-    ./boilerplate/site.json 
-    {
-        "test": "http://server.address.for.test.com",
-        "reference": "https://server.address.for.reference.com",
-        "ua": {
-            "desktop": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100",
-            "phone": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0 Mobile/15E148 Safari/604.1"
-        },
-        "viewports": [
-            {
-                "label": "desktop",
-                "width": 1920,
-                "height": 1024
-            },
-            {
-                "label": "phone",
-                "width": 600,
-                "height": 900
-            }
+
+全てのエンドポイントに対するテンプレートなシナリオを設定ファイルとコマンドで自動生成する。
+
+#### 1-1. <i id="conf">設定ファイルを作成する</i>
+```json
+{
+    "templateType": "min",
+    "viewports": [
+        "desktop",
+        "phone"
+    ],
+    "test": "http://your.test.site.com",
+    "reference": "http://your.reference.site.com",
+    "endpoints": {
+        "index": [
+            some_scenario_a,
+            some_scenario_b
         ],
-        "endpoints": {
-            "index": [
-                "scenario1",
-                "scenario2"
-            ],
-            "/endpoint1": [
-                "scenario1",
-                "scenario2"
-            ]
-        }
+        "/some_endpoint": [
+            some_scenario_c
+        ],
+        "/some_endpoint/some_nested_endpoint": [
+            some_scenario_d
+        ]
+        "/some_endpoint/#some_link": [
+            some_scenario_e
+        ]
     }
-#### 例（上記json）で生成されるファイル・ディレクトリとその構成（太字表記のデータが自動生成によるもの）
-__common.json, ${engine}_manupulation.js__ については後述。
+}
+```
+単純にスクリーンショットを取るだけの場合は設定ファイルにエンドポイントと適当なシナリオ名を記述するだけでテストが行える。尚、この機能についてはテンプレートが生成されれば良いという軽いノリで実装したのでマイグレーションや差分吸収などという便利なオプションは一切用意していない。
 
-- root (npm実行階層)
-  - boilerplate
-    - core (boilerplateソースファイル)
-    - __endpoints__
-      - __index__ (トップページ)
-        - __scenario1.json__ (トップページに対するシナリオ１)
-        - __scenario2.json__ (トップページに対するシナリオ２)
-      - __endpoint1__ (べージ１)
-        - __scenario1.json__ (ページ１に対するシナリオ１)
-        - __scenario2.json__ (ページ１に対するシナリオ２)
-      - __common.json__ (サイト全体に対するシナリオ)
-    - site.json (設定ファイル)
-    - __${engine}\_manupulation.js__
-    
-### 機能2. 同一シナリオファイル内でviewport毎の記述を可能に
-当初、何も考えずに各viewport毎にシナリオを分けて作ってみたものの全体を把握するのが容易ではないと感じたので、同一シナリオファイル内にviewport毎の記述ができるような構成にした。viewport毎の差異程度であれば寧ろ同じファイルに記述されていた方が見通しが良い。例に使用した __site.json__ で例えると ___desktop, phone___ というviewpoirtを指定しているので、生成されるシナリオファイルは以下のような形になる。 __allブロック__ については後述。
+##### 設定ファイル定義
 
-    ./boilerplate/endpoints/index/scenario1.json 
-    {
-        "all": {
-            something ...
-        },
-        "desktop": {
-            something ...
-        },
-        "phone": {
-            something ...
-        }
-    }  
+###### templateType
+コマンドの実行によって生成されるシナリオの初期内容を変更する為の値。[ソース](https://github.com/coremind-jp/backstopjs_boilerplate/blob/master/boilerplate/templates/scenarioEndpoint.json)から使用可能なタイプとその内容を確認する。
+
+###### viewports
+viewportsで指定したビューポート数だけシナリオ内に分類情報が追加される。
+上記の例の場合、以下のようなシナリオが生成される。これらの分類については機能2, 機能3にて言及している。
+```json
+{
+  "all": {
+    "$scripts": [],
+    "$subScenarios": [],
+  },
+  "desktop": {
+    "$scripts": [],
+    "$subScenarios": []
+  },
+  "phone": {
+    "$scripts": [],
+    "$subScenarios": []
+  }
+}
+```
+
+###### test と reference
+backstopjs における同パラメータと同義。boilerplate では test または reference に対して同一ドメイン内のエンドポイントに焦点を充てている為、異なるドメインを有するシナリオは生成できない。
+
+###### endpoints
+key にはスクリーンショットを実行する対象パスを、value にはその対象パスに対するシナリオを配列で記述する。同一ページに対して backstopjs が提供する機能(selectors) では対応できないマルチスクリーンショットを実行したい場合でも個別にシナリオ定義を追記する事で簡単に実現できる。またページ内リンクやネストしたパスを持つエンドポイント（例では /some_endpoint/some_nested_endpoint や /some_endpoint/#some_link）はその全部を一つのエンドポイントとして扱う。index は特殊な値で `/` に対する定義と解釈される。
+
+#### 1-2. <i id="init">コマンドの実行</i>
+`node_modules/backstopjs_boilerplate/boilerplate/runner.js init config.json`
+
+または、package.json の scripts ブロック内では以下の形でも実行可能。
+
+`bsbl init config.json`
+
+渡された設定ファイルが置かれているディレクトリ上にシナリオのテンプレートを生成する。（上記の設定ファイルによる生成結果を以下に記載）また boilerplate はシナリオのテンプレートを生成する際に backstop.json を必要とするため、__暗黙的に `backstop init` も実行する。__
+
+    - ./
+      - config.json
+      - common.json
+      - ${engine}_scripts.js
+      - index
+        - some_scenario_a.json
+        - some_scenario_b.json
+      - /some_endpoint
+        - some_scenario_c.json
+      - /some_endpoint_some_nested_endpoint
+        - some_scenario_d.json
+      - /some_endpoint_-somelink
+        - some_scenario_e.json
+
+その他のコマンドについては[コマンド一覧](#cmd)参照
+
+### 機能2. 同一シナリオファイル内でビューポート毎の記述を可能に
+
+当初、何も考えずに各ビューポート毎にシナリオを分けて作ってみたものの全体を把握するのが容易ではないと感じたので、同一シナリオファイル内にビューポート毎の記述ができるような構成にした。ビューポート毎の差異程度であれば寧ろ同じファイルに記述されていた方が見通しが良い。例に使用した設定ファイルで例えると ___desktop, phone___ というviewpoirtを指定しているので、生成されるシナリオファイルは以下のような形になる。 __allブロック__ については後述。
+```json
+{
+    "all": {
+        something ...
+    },
+    "desktop": {
+        something ...
+    },
+    "phone": {
+        something ...
+    }
+}
+```
     
 ### 機能3. 再利用可能なシナリオ
-シナリオの再利用は大きく三ヵ所で行えるようにした。
+
+シナリオの再利用は大きく三ヵ所で行える。
 
 #### 3-1. シナリオファイル内での再利用
-__機能2.__ で出てきた __allブロック__ 。ここに記述した操作はそのシナリオの全viewportに対して適用される。
+__機能2.__ で出てきた __allブロック__ 。ここに記述した操作はそのシナリオの全ビューポートに対して適用される。
 
 #### 3-2. 同一エンドポイント内での再利用
+
 同一エンドポイント内には異なるシナリオが作成できるが、時として各シナリオで共通の操作がある。そのような場合に利用する。
 
 ##### 3-2-1. 共通する操作のみを切り出したjsonファイルを対象のエンドポイントのディレクトリに配置する。
-最初の例に反映させると以下のようになる。
 
-- root (npm実行階層)
-  - boilerplate
-    - endpoints
-      - endpoint1
-        - scenario1.json
-        - scenario2.json
-        - __sheared_scenario__ (scenario1, scenario2, 全viewportで共通操作)
-        - __sheared_scenario_only_desktop__ (scenario1, scenario2のdesktopのみの共通操作)
-        - __sheared_scenario_only_phone__ (scenario1, scenario2のphoneのみの共通操作)
+    - ./
+      - config.json
+      - index
+        - some_scenario_a.json
+        - some_scenario_b.json
+        - sheared_scenario.json              //some_scenario_a と some_scenario_b の全ビューポートで共通操作
+        - sheared_scenario_only_desktop.json //some_scenario_a と some_scenario_b の desktop のみの共通操作
+        - sheared_scenario_only_phone.json   //some_scenario_a と some_scenario_b の phone のみの共通操作
 
+注意点としては、以下のように配置するファイル内ではビューポート毎の記述(all, desktop, phone等)はしない。
+```json
+./index/sheared_scenario.json
+{
+    "clickSelectors": [
+        ".click"
+    ],
+    something ...
+}
+```
 
-_注意点としては配置するファイル内ではviewport別の記述(例の場合、all, desktop, phone等)はしない。_
-    
-    ./boilerplate/endpoints/endpoint1/sheared_scenario.json
-    {
-        "clickSelectors": [
-            ".click"
+##### 3-2-2 シナリオ内で ___$subScenarios___ キーに __3-2-1__ で配置したファイルの名前を指定する。
+___$subScenarios___ キーはビューポート毎に指定できるので細かく制御可能になっている。
+```json
+./index/scenario_a.json & ./index/scenario_b.json
+{
+    "all": {
+        "$subScenarios": [
++           "sheared_scenario"
+        ],
+        something ...
+    },
+    "desktop": {
+        "$subScenarios": [
++           "sheared_scenario_only_desktop"
+        ],
+        something ...
+    },
+    "phone": {
+        "$subScenarios": [
++           "sheared_scenario_only_phone"
         ],
         something ...
     }
-    
-##### 3-2-2 シナリオ内で ___$subScenarios___ キーに __3-2-1__ で配置したファイルの名前を指定する。
-このキーはviewport毎に指定できるので細かく制御可能になっている。
-
-    ./boilerplate/endpoints/endpoint1/scenario1.json & ./boilerplate/endpoints/endpoint1/scenario2.json
-    {
-        "all": {
-    |       "$subScenarios": [
-    |           "sheared_scenario"
-    |       ],
-            something ...
-       },
-        "desktop": {
-    |       "$subScenarios": [
-    |           "sheared_scenario_only_desktop"
-    |       ],
-            something ...
-        },
-        "phone": {
-    |       "$subScenarios": [
-    |           "sheared_scenario_only_phone"
-    |       ],
-            something ...
-        }
-    }
+}
+```
 
 #### 3-3. サイト全体を通した再利用
 
-__機能1.__ で生成された __common.js__ 。ここに記述した操作は全てのシナリオに反映される。基本設定として捉えると良い。
+__機能1.__ で生成された __common.js__ 。ここに記述した操作は全てのシナリオに反映される。注意してほしいのは、このファイルにはシナリオで定義可能な全てのプロパティについてデフォルト値が記述されている。（つまりそれらの値について backstopjs.json の値を一切利用しない）
 
 #### 3-4. シナリオの適用順序
 
 一つのシナリオを出力する際にいくつものシナリオ(json)が関わってくるため、読み込まれる順序を理解する必要がある。
 
-1. 最も優先度が高いのは __site.json__ で定義されているシナリオ。
-2. 次に __site.json__ の中で定義されている ___$subScenarios___ 配列が示すシナリオ。
-3. 次が __common.js__ で定義される操作
+1. 最も優先度が高いのは設定ファイルに定義されているシナリオ。
+2. 次に設定ファイルの中で定義されている ___$subScenarios___ 配列が示すシナリオ。
+3. 次が __common.json__ で定義される操作
 4. 最後に __common.js__ の中で定義されている ___$subScenarios___ 配列が示すシナリオ。
   
 ___$subScenarios___ 配列は先頭から積み上げていくので配列に複数のシナリオが含まれる場合、前方より後方が優先される。
 
 #### 3-5. カスタムプレフィクス
 
-__「再利用」__ は具体的にデータをどの様に作用させるのかという点について説明をする。シナリオを上書きしたいと思った場合、数値や文字列などのプリミティブ型であれば代入以外の選択肢は無いが、配列には二通りの上書きが存在する。一つはプリミティブ同様に単純な上書き、もう一つは既存の配列に対するマージ。
+__「再利用」__ 時に記述内容に重複があった場合、具体的にどの様にデータに作用するのか。そしてどの様な操作オプションがあるのか。
+
+シナリオを上書きしたいと思った場合、数値や文字列などのプリミティブ型であれば代入以外の選択肢は無いが、配列には二通りの上書きが存在する。一つはプリミティブ同様に単純な上書き、もう一つは既存の配列に対するマージ。
   
-他方、特定のシナリオを実行する場合にのみ、再利用したシナリオの一部操作を除外したいという特殊なケースもある。boilerplateではカスタムプレフィクスを利用してそれらの制御ができるようになっている。カスタムプレフィクスはシナリオに含まれる操作（clickSelectors, hoverSelectors等）にプレフィクスを付けることでシナリオ出力の制御を切り替える。カスタムプレフィクスは対象キーが保持する値が配列であればシナリオ内に定義されるあらゆる要素に適用できる。objectやプリミティブなキーにカスタムプレフィクスを指定しても意味はない。
-  
-カスタムプレフィクスを持たない要素に配列が設定されている場合、 `+:` として扱われる。
+他方、特定のシナリオを実行する場合にのみ、再利用したシナリオの一部操作を除外したいという特殊なケースもある。boilerplate ではカスタムプレフィクスを利用してそれらの制御ができるようになっている。
+
+シナリオに含まれるさまざまな操作にカスタムプレフィクスを付けることで最終的なシナリオの形を柔軟に制御できる。objectやプリミティブな値を保持するキーにカスタムプレフィクスを指定しても意味はない。配列を保持するキーにカスタムプレフィクスの指定が無い場合、 `+:` として扱われる。
 
 | prefix | description |
-----|---- 
-| +: | 既存の配列にマージする。配列内で重複が見つかった場合、後方を破棄する(default) |
-| -: | 既存の配列から指定した値を取り除く |
+|:----:|----|
+| +: | 対象配列にマージする。配列内で重複が見つかった場合、後方の値を破棄する |
+| -: | 対象配列に含まれる同じ値を取り除く |
 | =: | 配列全体を入れ替える |
 
 __例__
   
 上書き元
+```json
+{
+    "clickSelectors": [
+        ".someelement-1",
+        ".someelement-2",
+        ".someelement-3"
+    ],
+    "hoverSelectors": [
+        ".someelement-4"
+    ],
+}
+```
 
-    {
-        "clickSelectors": [
-            ".someelement-1",
-            ".someelement-2",
-            ".someelement-3"
-        ],
-        "hoverSelectors": [
-            ".someelement-4"
-        ],
-    }
-    
 上書き内容
-
-    {
-        "-:clickSelectors": [
-            ".someelement-1",
-            ".someelement-3"
-        ],
-        "clickSelectors": [
-            ".someelement-2",
-            ".someelement-4"
-        ]
-        "=:hoverSelectors": []
-    }
+```json
+{
+    "-:clickSelectors": [
+        ".someelement-1",
+        ".someelement-3"
+    ],
+    "clickSelectors": [
+        ".someelement-2",
+        ".someelement-4"
+    ]
+    "=:hoverSelectors": []
+}
+```
 
 上書き結果
+```json
+{
+    "clickSelectors": [
+        ".someelement-2",
+        ".someelement-4"
+    ]
+    "hoverSelectors": []
+}
+```
 
-    {
-        "clickSelectors": [
-            ".someelement-2",
-            ".someelement-4"
-        ]
-        "hoverSelectors": []
-    }
+### 4. engine_scripts のモジュール化
 
-### 4. engine_scriptのモジュール化
-
-既存のbackstopjsでもonBefore, onReadyを活用したengine_scriptのモジュール化は実現されているが、規則が漠然としているため設計とその実装に時間を取られる。boilerplateでは規則を設け、それに沿って実装することでエンジンを操作するためのコードを集中して書けるようにしている。また、記述した拡張コードはシナリオから脱着可能にして素早く試行錯誤できるようにしている。
+既存の backstopjs でも onBefore, onReady を活用したユーザー定義の engine_script に対するモジュール化は実現されているが、そこには明確なコーディングルールがないため、それらの呼び出しに関する設計とその実装に時間を取られてしまう。boilerplate では規則を設け、それに沿って実装することでエンジンを操作するためのコードを集中して書けるようにしている。また、記述した拡張コードはシナリオから脱着可能にして素早く試行錯誤できるようにしている。
   
 #### 4-1. 拡張操作の実装
 
-__機能1.__ で生成された ___${engine}\_manupulation.js___ に実装する。 ___${engine}___ はテストに使用しているエンジンの名前となる（デフォルトではpuppeteer）。再利用を意識した単位で記述すれば1ファイルでも十分把握可能だと思うが、気になる場合は意味ある塊ごとに外部ファイル化して後からこのファイルのモジュールとして割り当てれば良い。 このファイルの _module.exports_ に関数を割り当てて行き、シナリオからはその関数名を指定する。
+boilerplate では engine_scripts の エントリーポイントは onBefore, onReady ではなく、__機能1.__ で生成された _\${engine}\_scripts.js_ となる。 _${engine}_ はテストに使用しているエンジンの名前となる。（デフォルトではpuppeteer）
+onBefore, onReady は `init` 実行時にシナリオから制御するためのフック関数へ書き換えられる。
+
+[_\${engine}\_scripts.js_](https://github.com/coremind-jp/backstopjs_boilerplate/blob/master/boilerplate/templates/engine_scripts.js) を見ると分かるが、このモジュール関数は _preimplements_ 引数が渡されている。このオブジェクトの中には backstopjs が提供する _clickAndHoverHelper_ , _loadCookies_ , _overrideCSS_ の実装が含まれる。（_ignoreCSP_ , _interceptImages_ については追加のパッケージが必要なので含めていない） もしこれらの実行タイミングを制御したいのであればこのオブジェクトから取り出して任意のタイミングで呼び出すことができる。
+
+再利用を意識した単位で記述すれば1ファイルでも十分だと思うが、気になる場合は _preimplements_ の様に意味ある塊ごとに外部ファイル化し、後からこのファイルのモジュールとして割り当てると良い。
+
+シナリオは {engine}\_scripts.js_ で定義されるオブジェクトのキーを使って呼び出しを制御する。
 
 __例__
 
 実装例
-
-    ./boilerplate/puppeteer_manupulation.js
-    const { ROOT } =  require("./core/directory_path");
-    const loadCookies = require(`${ROOT}\\backstop_data\\engine_scripts\\puppet\\loadCookies.js`);
-    const clickAndHoverHelper = require(`${ROOT}\\backstop_data\\engine_scripts\\puppet\\clickAndHoverHelper.js`);
+```js
+./puppeteer_scripts.js
+module.exports = preimplements => ({
+    ...preimplements,
     
-    module.exports = {
-        // default function defined from onBefore.js
-        loadCookies,
+    // bodyに設定されているheightスタイルをautoに書き換える
+    overwriteBodyHeight: async function(page, scenario, vp) {
+        await page.addStyleTag({ content: `body { height: auto !important; }` });
+    },
 
-        // default function defined from onReady.js
-        clickAndHoverHelper,
-
-        // user-agentを設定する.
-        setUserAgent: async function(page, scenario, vp) {
-            await page.setUserAgent(site.ua[vp.label]);
-        },
-
-        // bodyに設定されているheightスタイルをautoに書き換える
-        overwriteBodyHeight: async function(page, scenario, vp) {
-            await page.addStyleTag({ content: `body { height: auto !important; }` });
-        },
-        
-        // 指定秒数待機する
-        wait: async function(page, scenario, vp, ms) {
-            await page.waitFor(ms);
-        },
-    }
+    // 指定秒数待機する
+    wait: async function(page, scenario, vp, ms) {
+        await page.waitFor(ms);
+    },
+});
+```
 
 #### 4-2. 拡張操作の呼び出し
 
-シナリオ内から拡張操作を呼び出すには、 ___$scripts___ 配列に実行順に沿って関数名を記述する。ここでもonBefore, onReadyの２つの呼び出しタイミングを制御するためにカスタムプレフィクスを利用する。また、関数名の後に `:` で区切った値を加えるとその値を引数として関数へ渡すことができる。
+シナリオ内から拡張操作を呼び出すには、 _$scripts_ 配列に関数名を記述する。onBefore, onReady の２つの呼び出しタイミングを制御するためにカスタムプレフィクスを利用する。また関数名の後に `:` で区切った値を加えるとその値を引数として関数へ渡すことができる。（例では _wait_ 関数の _ms_ 引数がそれを利用している）
+
+実行順序に関しては、_before_ プレフィクスが付いているものは、_ready_ プレフィクスが付いているものよりも必ず先に呼ばれる。同じプレフィクス同士の優先順位は配列への追加順となる。
 
 | prefix | description |
-----|---- 
+|:----:|----|
 | before: | 指定した関数をonBefore時に呼び出す |
 | ready: | 指定した関数をonReady時に呼び出す |
 
 __例__
 
 シナリオ
-
-    ./boilerplate/endpoints/endpoint1/scenario.js
-    {
-        "all": {
-            "$subScenarios": [
-                "sheared_scenario"
-            ],
-    |       "$scripts": [
-    |           "before:setUserAgent"
-    |       ],
-       },
-        "desktop": {
-            "$subScenarios": [
-                "sheared_scenario",
-                "sheared_scenario_only_desktop"
-            ],
-    |       "$scripts": [
-    |           "after:wait:1000",
-    |           "after:overwriteBodyHeight"
-    |       ],
-            something ...
-        },
-        "phone": {
-            "$subScenarios": [
-                "sheared_scenario",
-                "sheared_scenario_only_phone"
-            ],
-            something ...
-        }
+```json
+.index/scenario_a.js
+{
+    "all": {
+        "$subScenarios": [
+            "sheared_scenario"
+        ],
+        "$scripts": [
++           "before:wait:1000",
+        ],
+    },
+    "desktop": {
+        "$subScenarios": [
+            "sheared_scenario",
+            "sheared_scenario_only_desktop"
+        ],
+        "$scripts": [
++           "ready:overwriteBodyHeight"
+        ],
+        something ...
+    },
+    "phone": {
+        "$subScenarios": [
+            "sheared_scenario",
+            "sheared_scenario_only_phone"
+        ],
+        something ...
     }
-        
+}
+```
 
+## :cl: <i id="cmd">コマンド一覧</i>
+### init
+`bsbl init config.json`
+[コマンドの実行](#init)を参照
+
+### test
+
+`bsbl test config.json filter`
+
+_config.json_ に従ってシナリオを生成し backstopjs test を実行する。シナリオのラベル命名規則は以下の通りとなっている。_filter_ へ渡す値の参考にすると良い。
+
+ __{endpoint_directory}:{scenario_file}\:{viewport_name}__
+
+### reference
+
+`bsbl reference config.json filter`
+
+_config.json_ に従ってシナリオを生成し backstopjs reference を実行する。シナリオのラベル命名規則は以下の通りとなっている。_filter_ へ渡す値の参考にすると良い。
+
+ __{endpoint_directory}:{scenario_file}\:{viewport_name}__
+
+### その他のコマンドに対する挙動
+`bsbl` への第一引数が `init`, `test`, `reference` 以外の場合、全ての引数を backstopjs へ移譲し boilerplate は何もしない。（つまり `bsbl approve` は `backstopjs approve` と同じとなる）
+
+### :stuck_out_tongue_winking_eye: 最後に
+既存の backstopjs が提供するディレクトリ構成や設定（backstop.json）にシナリオのデフォルトが定義されている点などが扱い難い（個人的に編集対象となるファイルが散らばっている状況は好きになれない）と感じていたのでこの形に落ち着いた。何か提案等があったらpull requestやメール等を頂ければリアクションします。（多分）
