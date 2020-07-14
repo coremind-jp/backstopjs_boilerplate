@@ -1,0 +1,6 @@
+{
+    "$scripts": [
+        "before:subscenarioScriptBefore",
+        "ready:subscenarioScriptReady"
+    ]
+}

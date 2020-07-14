@@ -1,0 +1,23 @@
+{
+    "all": {
+        "$scripts": [
+            "before:loadCookies",
+            "before:setUserAgent",
+            "ready:clickAndHoverHelper"
+        ],
+        
+        "cookiePath": "backstop_data/cookies.json",
+        "readyEvent": null,
+        "readySelector": null,
+        "delay": 0,
+
+        "postInteractionWait": 0,
+        "scrollToSelector": null,
+
+        "selectors": ["document"],
+        "selectorExpansion": true,
+
+        "misMatchThreshold": 0.1,
+        "requireSameDimensions": true
+    }
+}

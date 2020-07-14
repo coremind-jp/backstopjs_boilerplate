@@ -1,0 +1,10 @@
+{
+    "all": {
+        "$scripts": [
+            "ready:scriptB"
+        ],
+        "$subScenarios": [
+            "for_endpoint_script"
+        ]
+    }
+}

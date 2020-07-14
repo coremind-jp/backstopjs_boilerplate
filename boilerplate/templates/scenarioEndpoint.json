@@ -1,0 +1,30 @@
+{
+    "empty": {
+    },
+
+    "min": {
+        "$scripts": [
+        ],
+        "$subScenarios": [
+        ]
+    },
+
+    "max": {
+        "$scripts": [
+        ],
+        "$subScenarios": [
+        ],
+        "selectors": [
+        ],
+        "removeSelectors": [
+        ],
+        "keyPressSelectors": [
+        ],
+        "hoverSelectors": [
+        ],
+        "clickSelectors": [
+        ],
+        "hideSelectors": [
+        ]
+    }
+}

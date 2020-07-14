@@ -1,0 +1,11 @@
+{
+    "all": {
+        "$subScenarios": [
+            "for_endpoint_merge"
+        ],
+        "__merge_me": ["defined_at_endpoint"],
+        "+:__merge_me": ["defined_at_endpoint_with_alias"],
+        "=:__replace_me": ["replaced_by_endpoint"],
+        "-:__remove_me": ["defined_at_common_sub"]
+    }
+}
