@@ -1,7 +1,7 @@
 const _ = require("lodash");
 const path = require("path");
 
-const { fromRoot, fromPuppetScript, fromTemplates, resolveEntryPoint } = require("./resolve");
+const { fromRoot, fromPuppetScript, fromTemplates, resolveEntryPoint, resolveScriptModule } = require("./resolve");
 const { mkdir, copyFile, createFile, unlink, ScenarioLabelParser } = require("./utils");
 
 
@@ -14,8 +14,8 @@ async function createTemplates(boilerplateConfigPath) {
   const backstop = require(fromRoot("backstop.json"));
   const { config, root, endpointRoot } = resolveEntryPoint(boilerplateConfigPath);
 
-  await swapHook("onBefore");
-  await swapHook("onReady");
+  await swapHook("before", "onBefore");
+  await swapHook("ready", "onReady");
 
   await mkdir(endpointRoot);
   await createCommonScenario(path.join(endpointRoot, "common.json"), config);
@@ -32,7 +32,7 @@ async function createTemplates(boilerplateConfigPath) {
 };
 
 
-async function swapHook(file) {
+async function swapHook(prefix, file) {
   // commentout because backstopjs always overwriting backstop.json and backstop_data when execute 'init'.
   // if (await exsists(fromPuppetScript(`${file}.js.backup`)))
   //   return;
@@ -42,8 +42,9 @@ async function swapHook(file) {
 
   await unlink(fromPuppetScript(`${file}.js`));
 
-  console.log(`[${file}.js] created`);
-  await copyFile(fromTemplates(`${file}.js`), fromPuppetScript(`${file}.js`));
+  const data = `module.exports = require("${resolveScriptModule()}/script.js")("${prefix}", "${file}")`
+  await createFile(fromPuppetScript(`${file}.js`), data);
+  console.log(`[${file}.js] recreated`);
 };
 
 
