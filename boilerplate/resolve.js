@@ -7,7 +7,7 @@ const fromPuppetScript  = file => path.join(fromRoot("backstop_data/engine_scrip
 
 const resolveEntryPoint = relativeConfigPath => {
   const root = path.dirname(path.resolve(relativeConfigPath));
-  const config = require(`.\\${path.relative(__dirname, relativeConfigPath)}`);
+  const config = require(`${path.relative(__dirname, relativeConfigPath)}`);
   const endpointRoot = path.join(root, config.pwd || ".");
 
   return { root, endpointRoot, config };
