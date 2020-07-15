@@ -8,7 +8,7 @@ __パッケージインストール__
 
 __設定ファイル作成__
 
-[ここを参照](#toc1-1)
+[「設定ファイルを作成する」](#toc1-1)を参照
 
 __package.json 編集__
 ```json
@@ -27,24 +27,24 @@ __テンプレート生成__
 __common.json 編集__
 ```
 "tablet": {
-+   "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0 Safari/605.1.15",
-    "viewports": [
-        {
-            "label": "tablet",
-+           "width": 1024,
-+           "height": 1366
-        }
-    ]
++ "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0 Safari/605.1.15",
+  "viewports": [
+    {
+      "label": "tablet",
++     "width": 1024,
++     "height": 1366
+    }
+  ]
 },
 "phone": {
-+   "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0 Mobile/15E148 Safari/604.1",
-    "viewports": [
-        {
-            "label": "phone",
-+           "width": 414,
-+           "height": 896
-        }
-    ]
++ "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0 Mobile/15E148 Safari/604.1",
+  "viewports": [
+    {
+      "label": "phone",
++     "width": 414,
++     "height": 896
+    }
+  ]
 }
 ```
 
@@ -74,6 +74,7 @@ __テスト実行__
     - [3-3. サイト全体を通した再利用](#toc3-3)
     - [3-4. シナリオの適用順序](#toc3-4)
     - [3-5. カスタムプレフィックス](#toc3-5)
+    - [3-6. カスタムプレフィックスの適用順序](#toc3-6)
   - [4. engine_scripts のモジュール化](#toc4)
     - [4-1. 拡張操作の実装](#toc4-1)
     - [4-2. 拡張操作の呼び出し](#toc4-2)
@@ -105,28 +106,28 @@ backstopjs 自体が提供するヘッドレスブラウザに対する操作は
 #### <span id="toc1-1">1-1. 設定ファイルを作成する</span>
 ```json
 {
-    "templateType": "min",
-    "viewports": [
-        "desktop",
-        "phone"
+  "templateType": "min",
+  "viewports": [
+    "desktop",
+    "phone"
+  ],
+  "test": "http://your.test.site.com",
+  "reference": "http://your.reference.site.com",
+  "endpoints": {
+    "index": [
+      "some_scenario_a",
+      "some_scenario_b"
     ],
-    "test": "http://your.test.site.com",
-    "reference": "http://your.reference.site.com",
-    "endpoints": {
-        "index": [
-            "some_scenario_a",
-            "some_scenario_b"
-        ],
-        "/some_endpoint": [
-            "some_scenario_c"
-        ],
-        "/some_endpoint/some_nested_endpoint": [
-            "some_scenario_d"
-        ],
-        "/some_endpoint/#some_link": [
-            "some_scenario_e"
-        ]
-    }
+    "/some_endpoint": [
+      "some_scenario_c"
+    ],
+    "/some_endpoint/some_nested_endpoint": [
+      "some_scenario_d"
+    ],
+    "/some_endpoint/#some_link": [
+      "some_scenario_e"
+    ]
+  }
 }
 ```
 単純にスクリーンショットを取るだけの場合は設定ファイルにエンドポイントと適当なシナリオ名を記述するだけでテストが行える。尚、この機能についてはテンプレートが生成されれば良いという軽いノリで実装したのでマイグレーションや差分吸収などという便利なオプションは一切用意していない。
@@ -137,8 +138,8 @@ backstopjs 自体が提供するヘッドレスブラウザに対する操作は
 コマンドの実行によって生成されるシナリオの初期内容を変更する為の値。[ソース](https://github.com/coremind-jp/backstopjs_boilerplate/blob/master/boilerplate/templates/scenarioEndpoint.json)から使用可能なタイプとその内容を確認する。
 
 ###### viewports
-viewportsで指定したビューポート数だけシナリオ内に分類情報が追加される。
-上記の例の場合、以下のようなシナリオが生成される。これらの分類については機能2, 機能3にて言及している。
+viewportsで指定したビューポート数だけシナリオ内にビューポート情報が追加される。
+上記の例の場合、以下のようなシナリオが生成される。これらについては[「同一シナリオファイル内でビューポート毎の記述を可能にする」](#toc2)、[「再利用可能なシナリオ」](#toc3)にて言及している。
 ```json
 {
   "all": {
@@ -169,7 +170,9 @@ key にはスクリーンショットを実行する対象パスを、value に�
 
 `bsbl init config.json`
 
-渡された設定ファイルが置かれているディレクトリ上にシナリオのテンプレートを生成する。（上記の設定ファイルによる生成結果を以下に記載）また boilerplate はシナリオのテンプレートを生成する際に backstop.json を必要とするため、__暗黙的に `backstop init` も実行する。__
+渡された設定ファイルが置かれているディレクトリ上にシナリオのテンプレートを生成する。また boilerplate はシナリオのテンプレートを生成する際に backstop.json を必要とするため __暗黙的に `backstop init` も実行する。__　既にbackstop.json が存在する場合、`backstopjs init` は実行済みと判断されシナリオのテンプレート生成のみが行われる。
+
+__例__ [「設定ファイルを作成する」](#toc1-1)の設定ファイルによる生成結果
 
     - ./
       - config.json
@@ -185,22 +188,22 @@ key にはスクリーンショットを実行する対象パスを、value に�
       - /some_endpoint_-somelink
         - some_scenario_e.json
 
-その他のコマンドについては[コマンド一覧](#toc5)参照
+その他のコマンドについては[「コマンド一覧」](#toc5)参照
 
 ### <span id="toc2">2. 同一シナリオファイル内でビューポート毎の記述を可能にする</span>
 
-当初、何も考えずに各ビューポート毎にシナリオを分けて作ってみたものの全体を把握するのが容易ではないと感じたので、同一シナリオファイル内にビューポート毎の記述ができるような構成にした。ビューポート毎の差異程度であれば寧ろ同じファイルに記述されていた方が見通しが良い。例に使用した設定ファイルで例えると ___desktop, phone___ というviewpoirtを指定しているので、生成されるシナリオファイルは以下のような形になる。 __allブロック__ については後述。
+当初、何も考えずに各ビューポート毎にシナリオを分けて作ってみたものの全体を把握するのが容易ではないと感じたので、同一シナリオファイル内にビューポート毎の記述ができるような構成にした。ビューポート毎の差異程度であれば寧ろ同じファイルに記述されていた方が見通しが良い。例に使用した設定ファイルで例えるとviewpoirtsnには ___desktop, phone___ という値を指定しているので、生成されるシナリオファイルは以下のような形になる。 _all_ ブロックに記述した操作はそのシナリオの全ビューポートに対して適用される。
 ```
 {
-    "all": {
-        something...
-    },
-    "desktop": {
-        something...
-    },
-    "phone": {
-        something...
-    }
+  "all": {
+    something...
+  },
+  "desktop": {
+    something...
+  },
+  "phone": {
+    something...
+  }
 }
 ```
     
@@ -209,11 +212,11 @@ key にはスクリーンショットを実行する対象パスを、value に�
 シナリオの再利用は大きく三ヵ所で行える。
 
 #### <span id="toc3-1">3-1. シナリオファイル内での再利用</span>
-__機能2.__ で出てきた __allブロック__ 。ここに記述した操作はそのシナリオの全ビューポートに対して適用される。
+[「同一シナリオファイル内でビューポート毎の記述を可能にする」](#toc2) の _all_ ブロック。(ビューポート間共有)
 
 #### <span id="toc3-2">3-2. 同一エンドポイント内での再利用</span>
 
-同一エンドポイント内には異なるシナリオが作成できるが、時として各シナリオで共通の操作がある。そのような場合に利用する。
+同一エンドポイント内には異なるシナリオが作成できるが、時として各シナリオで共通の操作がある。そのような場合に利用する。(シナリオ間共有)
 
 ##### <span id="toc3-2-1">3-2-1. 共通する操作のみを切り出したjsonファイルを対象のエンドポイントのディレクトリに配置する。</span>
 
@@ -230,10 +233,10 @@ __機能2.__ で出てきた __allブロック__ 。ここに記述した操作�
 ```
 ./index/sheared_scenario.json
 {
-    "clickSelectors": [
-        ".click"
-    ],
-    something...
+  "clickSelectors": [
+    ".click"
+  ],
+  something...
 }
 ```
 
@@ -242,30 +245,30 @@ ___$subscenarios___ キーはビューポート毎に指定できるので細か
 ```
 ./index/scenario_a.json & ./index/scenario_b.json
 {
-    "all": {
-        "$subscenarios": [
-+           "sheared_scenario"
-        ],
-        something ...
-    },
-    "desktop": {
-        "$subscenarios": [
-+           "sheared_scenario_only_desktop"
-        ],
-        something ...
-    },
-    "phone": {
-        "$subscenarios": [
-+           "sheared_scenario_only_phone"
-        ],
-        something ...
-    }
+  "all": {
+    "$subscenarios": [
++     "sheared_scenario"
+    ],
+    something ...
+  },
+  "desktop": {
+    "$subscenarios": [
++     "sheared_scenario_only_desktop"
+    ],
+    something ...
+  },
+  "phone": {
+    "$subscenarios": [
++     "sheared_scenario_only_phone"
+    ],
+    something ...
+  }
 }
 ```
 
 #### <span id="toc3-3">3-3. サイト全体を通した再利用</span>
 
-`init` で生成された _common.js_ 。ここに記述した操作は全てのシナリオに反映される。注意してほしいのは、このファイルにはシナリオで定義可能な全てのプロパティについてデフォルト値が記述されている。（つまりそれらの値について backstopjs.json の値を一切利用しない）
+`init` で生成された _common.js_ 。ここに記述した操作は全てのシナリオに反映される。注意してほしいのは、このファイルにはシナリオで定義可能な全てのプロパティについてデフォルト値が記述されている。（つまりそれらの値について backstop.json の値を一切利用しない）
 
 #### <span id="toc3-4">3-4. シナリオの適用順序</span>
 
@@ -280,13 +283,11 @@ _$subscenarios_ 配列は先頭から積み上げていくので配列に複数�
 
 #### <span id="toc3-5">3-5. カスタムプレフィックス</span>
 
-__「再利用」__ 時に記述内容に重複があった場合、具体的にどの様にデータに作用するのか。そしてどの様な操作オプションがあるのか。
+再利用時に記述内容に重複があった場合、具体的にどの様にデータに作用するのか。そしてどの様な操作オプションがあるのか。
 
 シナリオを上書きしたいと思った場合、数値や文字列などのプリミティブ型であれば代入以外の選択肢は無いが、配列には二通りの上書きが存在する。一つはプリミティブ同様に単純な上書き、もう一つは既存の配列に対するマージ。
   
-他方、特定のシナリオを実行する場合にのみ、再利用したシナリオの一部操作を除外したいという特殊なケースもある。boilerplate ではカスタムプレフィックスを利用してそれらの制御ができるようになっている。
-
-シナリオに含まれるさまざまな操作にカスタムプレフィックスを付けることで最終的なシナリオの形を柔軟に制御できる。オブジェクトやプリミティブな値を保持するキーにカスタムプレフィックスを指定しても意味はない。配列を保持するキーにカスタムプレフィックスの指定が無い場合、 `+:` として扱われる。
+他方、特定のシナリオを実行する場合にのみ、再利用したシナリオの一部操作を除外したいという特殊なケースもある。boilerplate ではカスタムプレフィックスを利用してそれらの意図を柔軟に制御できるようになっている。
 
 | prefix | description |
 |:----:|----|
@@ -294,49 +295,56 @@ __「再利用」__ 時に記述内容に重複があった場合、具体的に
 | -: | 対象配列に含まれる同じ値を取り除く |
 | =: | 配列全体を入れ替える |
 
+オブジェクトやプリミティブな値を保持するキーにカスタムプレフィックスを指定しても意味はない。
+配列を保持するキーにカスタムプレフィックスの指定が無い場合、 `+:` として扱われる。
+
+##### <span id="toc3-6">3-6. カスタムプレフィックスの適用順序</span>
+
+同一シナリオファイル内に異なるカスタムプレフィックスを持つ同名のプロパティが存在する場合、処理優先度は`-:` < `+:` < `=:` となる。（つまり `=:` が定義されている場合は、`-:` や `+:` は無視されるし、`-:` と `+:` が定義されている場合は、`-:` が先に処理される。）異なるシナリオ間でカスタムプレフィクスを持つ同名のプロパティがある場合は、[「シナリオの適用順序」](toc3-4) に従って出力内容が決まる。
+
 __例__
   
 上書き元
 ```json
 {
-    "clickSelectors": [
-        ".someelement-1",
-        ".someelement-2",
-        ".someelement-3"
-    ],
-    "hoverSelectors": [
-        ".someelement-4"
-    ],
+  "clickSelectors": [
+    ".someelement-1",
+    ".someelement-2",
+    ".someelement-3"
+  ],
+  "hoverSelectors": [
+    ".someelement-4"
+  ],
 }
 ```
 
 上書き内容
 ```json
 {
-    "-:clickSelectors": [
-        ".someelement-1",
-        ".someelement-3"
-    ],
-    "clickSelectors": [
-        ".someelement-2",
-        ".someelement-4"
-    ],
-    "=:hoverSelectors": [
-        ".overwrite"
-    ]
+  "-:clickSelectors": [
+    ".someelement-1",
+    ".someelement-3"
+  ],
+  "clickSelectors": [
+    ".someelement-2",
+    ".someelement-4"
+  ],
+  "=:hoverSelectors": [
+    ".overwrite"
+  ]
 }
 ```
 
 上書き結果
 ```json
 {
-    "clickSelectors": [
-        ".someelement-2",
-        ".someelement-4"
-    ],
-    "hoverSelectors": [
-        ".overwrite"
-    ]
+  "clickSelectors": [
+    ".someelement-2",
+    ".someelement-4"
+  ],
+  "hoverSelectors": [
+    ".overwrite"
+  ]
 }
 ```
 
@@ -361,17 +369,17 @@ __例__
 ```js
 ./puppeteer_scripts.js
 module.exports = preimplements => ({
-    ...preimplements,
-    
-    // bodyに設定されているheightスタイルをautoに書き換える
-    overwriteBodyHeight: async function(page, scenario, vp) {
-        await page.addStyleTag({ content: `body { height: auto !important; }` });
-    },
+  ...preimplements,
+  
+  // bodyに設定されているheightスタイルをautoに書き換える
+  overwriteBodyHeight: async function(page, scenario, vp) {
+    await page.addStyleTag({ content: `body { height: auto !important; }` });
+  },
 
-    // 指定秒数待機する
-    wait: async function(page, scenario, vp, ms) {
-        await page.waitFor(ms);
-    },
+  // 指定秒数待機する
+  wait: async function(page, scenario, vp, ms) {
+    await page.waitFor(ms);
+  },
 });
 ```
 
@@ -392,29 +400,29 @@ __例__
 ```json
 .index/scenario_a.js
 {
-    "all": {
-        "$subscenarios": [
-            "sheared_scenario"
-        ],
-        "$scripts": [
-+           "before:wait:1000",
-        ],
-    },
-    "desktop": {
-        "$subscenarios": [
-            "sheared_scenario",
-            "sheared_scenario_only_desktop"
-        ],
-        "$scripts": [
-+           "ready:overwriteBodyHeight"
-        ]
-    },
-    "phone": {
-        "$subscenarios": [
-            "sheared_scenario",
-            "sheared_scenario_only_phone"
-        ]
-    }
+  "all": {
+    "$subscenarios": [
+      "sheared_scenario"
+    ],
+    "$scripts": [
++       "before:wait:1000",
+    ],
+  },
+  "desktop": {
+    "$subscenarios": [
+      "sheared_scenario",
+      "sheared_scenario_only_desktop"
+    ],
+    "$scripts": [
++     "ready:overwriteBodyHeight"
+    ]
+  },
+  "phone": {
+    "$subscenarios": [
+      "sheared_scenario",
+      "sheared_scenario_only_phone"
+    ]
+  }
 }
 ```
 
