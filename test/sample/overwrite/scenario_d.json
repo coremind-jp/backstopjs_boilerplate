@@ -1,6 +1,6 @@
 {
     "all": {
-        "$subScenarios": [
+        "$subscenarios": [
             "for_endpoint_overwrite"
         ]
     }

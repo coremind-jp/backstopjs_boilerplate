@@ -104,7 +104,7 @@ describe("ScenarioTest", () => {
 
   describe("Overwrite parameters", () => {
 
-    test("Common.json's subscenario able to overwrite another one that priority decid by '$subScenarios' order", async () => {
+    test("Common.json's subscenario able to overwrite another one that priority decid by '$subscenarios' order", async () => {
 
       scenarios.forEach(scenario => {
         const expected = { __overwrite_me_with_common_sub: "overwrite_by_common_sub_second" };
