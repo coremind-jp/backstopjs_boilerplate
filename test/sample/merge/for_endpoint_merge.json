@@ -1,3 +1,6 @@
 {
-    "__merge_me": ["defined_at_endpoint_sub"]
+    "__merge_me": ["defined_at_endpoint_sub"],
+    "__merge_order_remove_before": ["a", "b", "c", "d"],
+    "__merge_order_remove_after": ["a", "b", "c", "d"],
+    "__merge_order_set_the_highest_priority": ["a", "b", "c", "d"]
 }
