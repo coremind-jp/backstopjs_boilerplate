@@ -2,7 +2,7 @@ const _ = require("lodash");
 const path = require("path");
 
 const { fromRoot, fromPuppetScript, fromTemplates, resolveEntryPoint, resolveScriptModule } = require("./resolve");
-const { exsists, mkdir, copyFile, createFile, unlink, ScenarioLabelParser } = require("./utils");
+const { exists, mkdir, copyFile, createFile, unlink, ScenarioLabelParser } = require("./utils");
 
 
 /**
@@ -33,7 +33,7 @@ async function createTemplates(boilerplateConfigPath) {
 
 
 async function swapHook(prefix, file) {
-  if (await exsists(fromPuppetScript(`${file}.js.backup`)))
+  if (await exists(fromPuppetScript(`${file}.js.backup`)))
     return;
   
   console.log(`[${file}.js] backup`);

@@ -1,20 +1,20 @@
 
 {
     "all": {
-        "$subScenarios": [
+        "$subscenarios": [
             "for_endpoint_all"
         ],
         "__delete_me": "$delete"
     },
     "desktop": {
         "$scripts": [],
-        "$subScenarios": [
+        "$subscenarios": [
             "for_endpoint_desktop"
         ]
     },
     "phone": {
         "$scripts": [],
-        "$subScenarios": [
+        "$subscenarios": [
             "for_endpoint_phone"
         ]
     }

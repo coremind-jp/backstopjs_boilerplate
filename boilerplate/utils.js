@@ -27,7 +27,7 @@ function _mkdir(path) {
  * @param {*} path 
  */
  async function mkdir(path) {
-  if (!await exsists(path)) {
+  if (!await exists(path)) {
     await _mkdir(path);
     console.log(`[direcdestry created] ${path}`);
   }
@@ -51,7 +51,7 @@ function _writeFile(path, data) {
  * @param {*} data 
  */
  async function createFile(path, data) {
-  if (!await exsists(path)) {
+  if (!await exists(path)) {
     if  (!await _writeFile(path, data))
       console.log(`[file created] ${path}`);
   }
@@ -92,7 +92,7 @@ function unlink(path) {
  * Return boolean about exists file or directory.
  * @param {*} path 
  */
-async function exsists(path, log = false) {
+async function exists(path, log = false) {
   const e = await _access(path, fs.constants.W_OK | fs.constants.R_OK);
   if (e && e.code === "ENOENT") {
     if (log) console.info(`[INFO]: ${path} is not exists.`);
@@ -108,7 +108,7 @@ async function exsists(path, log = false) {
  * @param {*} uri 
  */
 async function requireSafe(uri) {
-  return await exsists(uri, true) ? require(uri): {}
+  return await exists(uri, true) ? require(uri): {}
 }
 
 
@@ -190,6 +190,6 @@ module.exports = {
   createFile,
   copyFile,
   unlink,
-  exsists,
+  exists,
   requireSafe,
 }

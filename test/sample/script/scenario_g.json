@@ -3,7 +3,7 @@
         "$scripts": [
             "ready:scriptB"
         ],
-        "$subScenarios": [
+        "$subscenarios": [
             "for_endpoint_script"
         ]
     }

@@ -5,14 +5,14 @@
     "min": {
         "$scripts": [
         ],
-        "$subScenarios": [
+        "$subscenarios": [
         ]
     },
 
     "max": {
         "$scripts": [
         ],
-        "$subScenarios": [
+        "$subscenarios": [
         ],
         "selectors": [
         ],

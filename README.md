@@ -143,15 +143,15 @@ viewportsで指定したビューポート数だけシナリオ内に分類情�
 {
   "all": {
     "$scripts": [],
-    "$subScenarios": [],
+    "$subscenarios": [],
   },
   "desktop": {
     "$scripts": [],
-    "$subScenarios": []
+    "$subscenarios": []
   },
   "phone": {
     "$scripts": [],
-    "$subScenarios": []
+    "$subscenarios": []
   }
 }
 ```
@@ -237,25 +237,25 @@ __機能2.__ で出てきた __allブロック__ 。ここに記述した操作�
 }
 ```
 
-##### <span id="toc3-2-2">3-2-2 シナリオ内で ___$subScenarios___ キーに配置したファイルの名前を指定する。</span>
-___$subScenarios___ キーはビューポート毎に指定できるので細かく制御可能になっている。
+##### <span id="toc3-2-2">3-2-2 シナリオ内で ___$subscenarios___ キーに配置したファイルの名前を指定する。</span>
+___$subscenarios___ キーはビューポート毎に指定できるので細かく制御可能になっている。
 ```
 ./index/scenario_a.json & ./index/scenario_b.json
 {
     "all": {
-        "$subScenarios": [
+        "$subscenarios": [
 +           "sheared_scenario"
         ],
         something ...
     },
     "desktop": {
-        "$subScenarios": [
+        "$subscenarios": [
 +           "sheared_scenario_only_desktop"
         ],
         something ...
     },
     "phone": {
-        "$subScenarios": [
+        "$subscenarios": [
 +           "sheared_scenario_only_phone"
         ],
         something ...
@@ -272,11 +272,11 @@ ___$subScenarios___ キーはビューポート毎に指定できるので細か
 一つのシナリオを出力する際にいくつものシナリオ(json)が関わってくるため、読み込まれる順序を理解する必要がある。
 
 1. 最も優先度が高いのは設定ファイルに定義されているシナリオ。
-2. 次に設定ファイルの中で定義されている _$subScenarios_ 配列が示すシナリオ。
+2. 次に設定ファイルの中で定義されている _$subscenarios_ 配列が示すシナリオ。
 3. 次が _common.json_ で定義される操作
-4. 最後に _common.js_ の中で定義されている _$subScenarios_ 配列が示すシナリオ。
+4. 最後に _common.js_ の中で定義されている _$subscenarios_ 配列が示すシナリオ。
   
-_$subScenarios_ 配列は先頭から積み上げていくので配列に複数のシナリオが含まれる場合、前方より後方が優先される。
+_$subscenarios_ 配列は先頭から積み上げていくので配列に複数のシナリオが含まれる場合、前方より後方が優先される。
 
 #### <span id="toc3-5">3-5. カスタムプレフィックス</span>
 
@@ -321,7 +321,9 @@ __例__
         ".someelement-2",
         ".someelement-4"
     ],
-    "=:hoverSelectors": [".overwrite"]
+    "=:hoverSelectors": [
+        ".overwrite"
+    ]
 }
 ```
 
@@ -332,7 +334,9 @@ __例__
         ".someelement-2",
         ".someelement-4"
     ],
-    "hoverSelectors": [".overwrite]
+    "hoverSelectors": [
+        ".overwrite"
+    ]
 }
 ```
 
@@ -389,7 +393,7 @@ __例__
 .index/scenario_a.js
 {
     "all": {
-        "$subScenarios": [
+        "$subscenarios": [
             "sheared_scenario"
         ],
         "$scripts": [
@@ -397,7 +401,7 @@ __例__
         ],
     },
     "desktop": {
-        "$subScenarios": [
+        "$subscenarios": [
             "sheared_scenario",
             "sheared_scenario_only_desktop"
         ],
@@ -406,7 +410,7 @@ __例__
         ]
     },
     "phone": {
-        "$subScenarios": [
+        "$subscenarios": [
             "sheared_scenario",
             "sheared_scenario_only_phone"
         ]

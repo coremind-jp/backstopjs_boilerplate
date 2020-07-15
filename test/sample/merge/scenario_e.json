@@ -1,6 +1,6 @@
 {
     "all": {
-        "$subScenarios": [
+        "$subscenarios": [
             "for_endpoint_merge"
         ],
         "__merge_me": ["defined_at_endpoint"],

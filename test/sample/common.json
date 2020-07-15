@@ -1,6 +1,6 @@
 {
     "all": {
-        "$subScenarios": [
+        "$subscenarios": [
             "for_common_all",
             "for_common_merge",
             "for_common_overwrite_first",
@@ -21,7 +21,7 @@
             }
         ],
 
-        "$subScenarios": [
+        "$subscenarios": [
             "for_common_desktop"
         ],
         "__defined_at_common_viewport": "desktop"
@@ -36,7 +36,7 @@
             }
         ],
 
-        "$subScenarios": [
+        "$subscenarios": [
             "for_common_phone"
         ],
         "__defined_at_common_viewport": "phone"

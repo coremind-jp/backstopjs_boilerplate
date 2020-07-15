@@ -20,7 +20,7 @@ const INC_CODE = "$scripts";
  * Property name in scenario(json)
  * that load the scenario before include different some scenario.
  */
-const INC_JSON = "$subScenarios";
+const INC_JSON = "$subscenarios";
 
 
 /**
@@ -76,14 +76,14 @@ async function createScenario(slp, config, root) {
     endpointScenario[slp.vpLabel] || {},
   ];
 
-  const subScenarios = await getSubScenarios(slp, scenarios);
+  const subscenarios = await getSubscenarios(slp, scenarios);
 
   const result = {
     label       : slp.label,
     url         : slp.getUrl(config.test),
     referenceUrl: slp.getUrl(config.reference),
 
-    ...await merge(scenarios, subScenarios)
+    ...await merge(scenarios, subscenarios)
   };
 
   result[WORK_DIR] = root;
@@ -93,11 +93,11 @@ async function createScenario(slp, config, root) {
 
 
 /**
- * Load all subScenarios from relational scenairos.
+ * Load all subscenarios from relational scenairos.
  * @param {ScenarioLabelParser} slp be subject to endpoint
  * @param {Array} scenarios be subject to relational senarios
  */
-async function getSubScenarios(slp, scenarios) {
+async function getSubscenarios(slp, scenarios) {
   return Promise.all(scenarios.map((scenario, i) => new Promise(async resolve => resolve(
 
       await _.isArray(scenario[INC_JSON])
@@ -129,14 +129,14 @@ async function getSubScenarios(slp, scenarios) {
  * 8. endpoint.[viewport label]
  * (subscenarios order is ascend by index)
  * @param {Array} scenarios 
- * @param {Array} subScenarios 
+ * @param {Array} subscenarios 
  */
-function merge(scenarios, subScenarios) {
+function merge(scenarios, subscenarios) {
   return scenarios.reduce((output, scenario, i) => {
 
     const mergedSubScenario = {};
 
-    subScenarios[i].forEach(subScenario =>
+    subscenarios[i].forEach(subScenario =>
       _mergeProperties(mergedSubScenario, _.cloneDeep(subScenario.json))
     );
 
