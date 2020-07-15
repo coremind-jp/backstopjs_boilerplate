@@ -1,0 +1,16 @@
+{
+    "all": {
+        "$subscenarios": [
+            "for_endpoint_merge"
+        ],
+        "-:__merge_order_remove_before": ["aa", "bb", "cc", "dd"],
+        "+:__merge_order_remove_before": ["aa", "bb", "cc", "dd"],
+
+        "+:__merge_order_remove_after": ["aa", "bb", "cc", "dd"],
+        "-:__merge_order_remove_after": ["aa", "bb", "cc", "dd"],
+
+        "=:__merge_order_set_the_highest_priority": ["set", "prefix", "the", "highest", "priority"],
+        "+:__merge_order_set_the_highest_priority": ["defined", "at", "merge", "prefix"],
+        "-:__merge_order_set_the_highest_priority": ["b", "d"]
+    }
+}

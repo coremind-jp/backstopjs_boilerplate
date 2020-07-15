@@ -174,10 +174,16 @@ describe("ScenarioTest", () => {
         "defined_at_common",
         "defined_at_endpoint_sub",
         "defined_at_endpoint",
-        "defined_at_endpoint_with_alias"
+        "defined_at_endpoint_with_alias",
       ];
 
       const expected2 = [
+        "defined_at_common_sub",
+        "defined_at_common",
+        "defined_at_endpoint_sub",
+      ];
+
+      const expected3 = [
         "defined_at_common_sub",
         "defined_at_common"
       ];
@@ -185,8 +191,10 @@ describe("ScenarioTest", () => {
       scenarios.forEach(scenario => {
         if (scenario.label.match(/scenario_e/)) {
           expect(scenario.__merge_me).toEqual(expected1)
-        } else {
+        } else if (scenario.label.match(/scenario_h/)) {
           expect(scenario.__merge_me).toEqual(expected2)
+        } else {
+          expect(scenario.__merge_me).toEqual(expected3)
         }
       });
     });
@@ -215,6 +223,29 @@ describe("ScenarioTest", () => {
           expect(scenario.__replace_me).toEqual(expected1)
         } else {
           expect(scenario.__replace_me).toEqual(expected2)
+        }
+      });
+    });
+
+    test("Custom prefix '-:' the lowest priority in prefixes", async () => {
+
+      const expected = ["a", "b", "c", "d", "aa", "bb", "cc", "dd"];
+
+      scenarios.forEach(scenario => {
+        if (scenario.label.match(/scenario_h/)) {
+          expect(scenario.__merge_order_remove_before).toEqual(expected)
+          expect(scenario.__merge_order_remove_after).toEqual(expected)
+        }
+      });
+    });
+
+    test("Custom prefix '=:' the highest priority in prefixes", async () => {
+
+      const expected = ["set", "prefix", "the", "highest", "priority"];
+
+      scenarios.forEach(scenario => {
+        if (scenario.label.match(/scenario_h/)) {
+          expect(scenario.__merge_order_set_the_highest_priority).toEqual(expected)
         }
       });
     });

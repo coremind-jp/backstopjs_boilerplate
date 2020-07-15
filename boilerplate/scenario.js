@@ -101,12 +101,12 @@ async function getSubscenarios(slp, scenarios) {
   return Promise.all(scenarios.map((scenario, i) => new Promise(async resolve => resolve(
 
       await _.isArray(scenario[INC_JSON])
-        ? Promise.all(scenario[INC_JSON].map(subScenarioName => new Promise(async innreResolve =>
+        ? Promise.all(scenario[INC_JSON].map(subscenarioName => new Promise(async innreResolve =>
             innreResolve({
-              name: subScenarioName,
+              name: subscenarioName,
               json: await requireSafe(i == 0 || i == 1 // for common file
-                ? slp.createEndpointsFilePath(`${subScenarioName}.json`)
-                : slp.createScenarioFilePath(`${subScenarioName}.json`)
+                ? slp.createEndpointsFilePath(`${subscenarioName}.json`)
+                : slp.createScenarioFilePath(`${subscenarioName}.json`)
               )
             })
           )))
@@ -136,8 +136,8 @@ function merge(scenarios, subscenarios) {
 
     const mergedSubScenario = {};
 
-    subscenarios[i].forEach(subScenario =>
-      _mergeProperties(mergedSubScenario, _.cloneDeep(subScenario.json))
+    subscenarios[i].forEach(subscenario =>
+      _mergeProperties(mergedSubScenario, _.cloneDeep(subscenario.json))
     );
 
     _mergeProperties(output, mergedSubScenario);
@@ -160,19 +160,34 @@ function merge(scenarios, subscenarios) {
  * @param {obejct} from merge from
  */
 function _mergeProperties(to, from) {
+  const arrayValues = { "=:": [], "+:": [], "-:": [] };
+
   for (const key in from) {
 
     const value = from[key];
-    const clean = { value, key: key.replace(/^[=\-\+]:/, "") };
+    const clean = { value, key, match: key.match(/^[=\-\+]:/) };
+
+    if (clean.match) {
+      clean.key = key.replace(clean.match[0], "");
+    }
 
     delete from[key];
 
-    _.isArray(clean.value)
-      ? mergeArray(to, key, clean)
-      : _.isObject(clean.value)
+    if (_.isArray(clean.value)) {
+
+      clean.match
+        ? arrayValues[clean.match[0]].push([to, key, clean])
+        : arrayValues["+:"].push([to, key, clean]);
+
+    } else {
+      _.isObject(clean.value)
         ? mergeObject(to, from, key, clean)
         : mergePrimitive(to, clean);
-  }  
+
+    }
+  }
+
+  mergeArray(arrayValues);
 }
 
 
@@ -182,18 +197,25 @@ function _mergeProperties(to, from) {
  * @param {*} key 
  * @param {*} clean 
  */
-function mergeArray(to, key, clean) {
-    if (key.match(/^=:/)) {
-      to[clean.key] = clean.value;
+function mergeArray(arrayValues) {
 
-    } else if (key.match(/^-:/)) {
-      if (_.isArray(to[clean.key])) {
-        to[clean.key] = _.differenceWith(to[clean.key], clean.value, _.isEqual);
-      }
+  const functions = {
+    "-:": (to, key, clean) => {
+      _.isArray(to[clean.key])
+        ? to[clean.key] = _.differenceWith(to[clean.key], clean.value, _.isEqual)
+        : console.log(`scenario property "${key}" variable type was different.`);
+    },
 
-    } else {
-      to[clean.key] = _.uniqWith((to[clean.key] || []).concat(clean.value), _.isEqual);
-    }
+    "+:": (to, key, clean) =>
+      to[clean.key] = _.uniqWith((to[clean.key] || []).concat(clean.value), _.isEqual),
+
+    "=:": (to, key, clean) =>
+      to[clean.key] = clean.value,
+  };
+
+  ["-:", "+:", "=:"].forEach(prefix =>
+    arrayValues[prefix].forEach(arrayValue =>
+      functions[prefix](...arrayValue)));
 }
 
 
@@ -205,7 +227,7 @@ function mergeArray(to, key, clean) {
  * @param {*} clean 
  */
 function mergeObject(to, from, key, clean) {
-  console.warning("object merge is not suport.");
+  console.log("merge not suport for Object.");
   mergePrimitive(to, clean);
 }
 
