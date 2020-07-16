@@ -14,8 +14,8 @@ __package.json 編集__
 ```json
 "scripts": {
   "bsbl-init": "bsbl init path/to/config/your_config.json",
-  "bsbl-reference": reference "bsbl path/to/config/your_config.json",
-  "bsbl-test": test "bsbl path/to/config/your_config.json",
+  "bsbl-reference": "bsbl reference path/to/config/your_config.json",
+  "bsbl-test": "bsbl test path/to/config/your_config.json",
   "bsbl-approve": "bsbl approve"
 },
 ```
