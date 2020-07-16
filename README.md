@@ -398,7 +398,7 @@ __例__
 
 シナリオ
 ```json
-.index/scenario_a.js
+.index/scenario_a.json
 {
   "all": {
     "$subscenarios": [
