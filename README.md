@@ -13,9 +13,9 @@ __設定ファイル作成__
 __package.json 編集__
 ```json
 "scripts": {
-  "bsbl-init": "bsbl path/to/config/your_config.json init",
-  "bsbl-reference": "bsbl path/to/config/your_config.json reference",
-  "bsbl-test": "bsbl path/to/config/your_config.json test",
+  "bsbl-init": "bsbl init path/to/config/your_config.json",
+  "bsbl-reference": reference "bsbl path/to/config/your_config.json",
+  "bsbl-test": test "bsbl path/to/config/your_config.json",
   "bsbl-approve": "bsbl approve"
 },
 ```
