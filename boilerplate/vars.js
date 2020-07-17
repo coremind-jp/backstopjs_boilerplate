@@ -7,7 +7,7 @@ const CONF_FILE_NAME = "boilerplate.json";
 /**
  * Template file name for puppeteer engine script hook.
  */
-const PUPPETEER_HOOK = "puppeteer_hook.json";
+const PUPPETEER_HOOK = "puppeteer_hook.js";
 
 
 /**
