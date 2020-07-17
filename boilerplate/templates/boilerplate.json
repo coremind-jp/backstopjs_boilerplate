@@ -1,6 +1,6 @@
 {
   "templateType": "min",
-  "url": "https://coremind-jp.github.io/",
+  "test": "https://coremind-jp.github.io/",
   "reference": "https://coremind-jp.github.io/",
   "endpoints": {
     "/backstopjs_boilerplate": [

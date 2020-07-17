@@ -5,14 +5,9 @@ const commander = require("./commander");
 const { unlink, createFile } = require("./utils");
 const { getBackstopConfigPath, getBoilerplateConfigPath } = require("./resolve");
 const { initialize, syncTemplates } = require("./template");
-const { createScenarios } = require("./scenario.js");
-
 
 const backstopPath = getBackstopConfigPath();
 const backstop = require(backstopPath);
-
-const boilerplatePath = getBoilerplateConfigPath();
-const boilerplate = require(boilerplatePath);
 
 switch (commander.command) {
 
@@ -21,13 +16,13 @@ switch (commander.command) {
     break;
 
   case "sync":
-    syncTemplates(boilerplate);
+    syncTemplates(require(getBoilerplateConfigPath()));
     break;
 
   case "test":
   case "reference":
     (async () => {
-      backstop.scenarios = await createScenarios(commander.command);
+      backstop.scenarios = await require("./scenario.js").createScenarios(commander.command);
 
       await unlink(backstopPath);
 
