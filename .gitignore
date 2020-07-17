@@ -2,3 +2,4 @@ node_modules
 /backstop_data/*
 !/backstop_data/boilerplate
 backstop.json
+backstop.js
