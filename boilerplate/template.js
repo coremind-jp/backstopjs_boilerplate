@@ -19,11 +19,12 @@ const backstop = require(getBackstopConfigPath());
 async function initialize() {
   await mkdir(cwdBoilerplate());
 
-  await copyFile(pkgTemplates(CONF_FILE_NAME), cwdBoilerplate(CONF_FILE_NAME));
-  await copyFile(pkgTemplates(PUPPETEER_HOOK), cwdPuppetScript(PUPPETEER_HOOK));
+  copyFile(pkgTemplates(CONF_FILE_NAME), cwdBoilerplate(CONF_FILE_NAME));
+  copyFile(pkgTemplates(ENGINE_SCRIPT), cwdBoilerplate(`${backstop.engine}_scripts.js`));
 
-  await _replaceHook("before", "onBefore");
-  await _replaceHook("ready", "onReady");
+  copyFile(pkgTemplates(PUPPETEER_HOOK), cwdPuppetScript(PUPPETEER_HOOK));
+  _replaceHook("before", "onBefore");
+  _replaceHook("ready", "onReady");
 };
 
 
@@ -33,8 +34,7 @@ async function initialize() {
  */
 async function syncTemplates(boilerplate) {
   
-  await _createCommonScenario();
-  copyFile(pkgTemplates(ENGINE_SCRIPT), cwdPuppetScript(`${backstop.engine}_scripts.js`));
+  _createCommonScenario();
 
   for (const endpoint in boilerplate.endpoints) {
     await mkdir(cwdBoilerplate(endpoint));
@@ -87,7 +87,7 @@ async function _createEndpointScenario(cwdPath, boilerplate) {
   for (const vpLabel of backstop.viewports)
     reslult[vpLabel] = template[boilerplate.templateType] || template.max;
 
-  await createFile(cwdPath, JSON.stringify(reslult, null, INMDENT_JSON));
+  createFile(cwdPath, JSON.stringify(reslult, null, INMDENT_JSON));
 }
 
 
@@ -97,7 +97,8 @@ async function _createCommonScenario() {
   for (const vpLabel of backstop.viewports)
     template[vpLabel.label] = { userAgent: "" };
 
-  await createFile(cwdBoilerplate(COMMON_DIR, COMMON_SCENARIO), JSON.stringify(template, null, INMDENT_JSON));
+  await mkdir(cwdBoilerplate(COMMON_DIR));
+  createFile(cwdBoilerplate(COMMON_DIR, COMMON_SCENARIO), JSON.stringify(template, null, INMDENT_JSON));
 }
 
 
