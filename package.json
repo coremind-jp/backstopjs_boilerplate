@@ -20,17 +20,17 @@
     "bsbl": "boilerplate/runner.js"
   },
   "scripts": {
-    "init": "node boilerplate/runner.js init",
-    "reference": "node boilerplate/runner.js reference",
-    "test": "node boilerplate/runner.js test",
-    "approve": "node boilerplate/runner.js approve",
-    "jest": "jest"
+    "boilerplate": "node boilerplate/runner.js",
+    "backstop": "node node_modules/backstopjs/runner.js",
+    "test": "jest --silent"
   },
   "devDependencies": {
+    "backstopjs": "^5.0.1",
     "jest": "^26.1.0"
   },
   "dependencies": {
-    "backstopjs": "^5.0.1",
-    "lodash": "^4.17.19"
+    "commander": "^5.1.0",
+    "lodash": "^4.17.19",
+    "rimraf": "^3.0.2"
   }
 }

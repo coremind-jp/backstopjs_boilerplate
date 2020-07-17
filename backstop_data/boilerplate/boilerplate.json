@@ -1,11 +1,7 @@
 {
   "templateType": "min",
-  "viewports": [
-    "desktop",
-    "phone"
-  ],
-  "test": "http://localhost:8080",
-  "reference": "http://localhost:8080",
+  "test": "https://coremind-jp.github.io/",
+  "reference": "https://coremind-jp.github.io/",
   "endpoints": {
     "index": [
       "scenario_a",
@@ -24,6 +20,9 @@
       "scenario_g"
     ]
   },
-  "skipOnReference": {
+  "skip": {
+    "when": "reference",
+    "endpoints": {
+    }
   }
 }

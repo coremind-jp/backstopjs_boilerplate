@@ -1,43 +1,37 @@
 #!/usr/bin/env node
 'use strict'
 
-const _ = require("lodash");
-const backstopjs = require("backstopjs");
-
-const { fromRoot, fromBoilerplate } = require("./resolve");
-const { exists } = require("./utils");
-const { createTemplates } = require(fromBoilerplate("template.js"));
-const { createScenarios } = require(fromBoilerplate("scenario.js"));
-
-(async function (command, boilerplateConfigPath, filter) {
-
-  switch (command) {
-
-    case "init":
-      if (!await exists(fromRoot("backstop.json")))
-        await backstopjs(command);
-
-      await createTemplates(boilerplateConfigPath);
-      break;
+const commander = require("./commander");
+const { unlink, createFile } = require("./utils");
+const { getBackstopConfigPath, getBoilerplateConfigPath } = require("./resolve");
+const { initialize, syncTemplates } = require("./template");
+const { createScenarios } = require("./scenario.js");
 
 
-    case "test":
-    case "reference":
-      const config = require(fromRoot("backstop.json"));
+const backstopPath = getBackstopConfigPath();
+const backstop = require(backstopPath);
 
-      config.scenarios = await createScenarios(boilerplateConfigPath, command === "reference");
+const boilerplatePath = getBoilerplateConfigPath();
+const boilerplate = require(boilerplatePath);
 
-      backstopjs(command, { config, filter });
-      break;
+switch (commander.command) {
 
+  case "init":
+    initialize();
+    break;
 
-    default:
-      backstopjs(...process.argv);
-      break;
-  }
+  case "sync":
+    syncTemplates(boilerplate);
+    break;
 
-})(
-  process.argv[2],
-  process.argv[3],
-  process.argv[4],
-);
+  case "test":
+  case "reference":
+    (async () => {
+      backstop.scenarios = await createScenarios(commander.command);
+
+      await unlink(backstopPath);
+
+      await createFile(backstopPath, JSON.stringify(backstop, null, 4));
+    })();
+    break;
+}
