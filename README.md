@@ -75,7 +75,7 @@ _backstop_data/_ 内に boilerplate のためのディレクトリと設定フ�
 __事前に`bsbl init`が実行済みでなければならない。__ 
 `[path]`には backstop.json へのパスを指定する。省略した場合、_./backstop.json_ として扱われる。
 
-_backstop_data/boilerplate/_ 内のディレクトリやファイルの構成と _boilerplate.json_ の定義が同じ状態に近くなるようにファイルを生成・削除する。コマンド実行時に既に _./backstop.json_ とマッチするディレクトリ、ファイルについては何も行わない。_./backstop.json_ に定義が存在していて、その定義が示すディレクトリやファイルがない場合はそれらを生成する。_./backstop.json_ に定義が存在しないディレクトリは内包するファイルを含め削除される。あくまでディレクトリ（エンドポイント）の差分しか取っていないので _./backstop.json_ 内でシナリオの定義を削除しても対象のファイルは削除されずに残り続ける。
+_backstop_data/boilerplate/_ 内のディレクトリやファイルの構成と _boilerplate.json_ の定義が同じ状態に近くなるようにファイルを生成・削除する。コマンド実行時に既に _boilerplate.json_ とマッチするディレクトリ、ファイルについては何も行わない。_boilerplate.json_ に定義が存在していて、その定義が示すディレクトリやファイルがない場合はそれらを生成する。_boilerplate.json_ に定義が存在しないディレクトリは内包するファイルを含め削除される。あくまでディレクトリ（エンドポイント）の差分しか取っていないので _boilerplate.json_ 内でシナリオの定義を削除しても対象のファイルは削除されずに残り続ける。
 
 #### test, reference
 `bsbl test [path]`　`bsbl reference [path]`
