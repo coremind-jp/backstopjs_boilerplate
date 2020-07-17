@@ -1,17 +1,24 @@
+process.argv = ['node', 'jest', 'init', 'backstop.json'];
+
 const _ = require("lodash");
 const { createScenarios } = require("../boilerplate/scenario");
 
+const resolve = require("../boilerplate/resolve");
+const backstop = require(resolve.getBackstopConfigPath());
+const boilerplate = require(resolve.getBoilerplateConfigPath());
+
+
 let onBefore, onReady, scenarios;
 
+
 let def = (() => {
-  const config = require("./sample/config.json");
-  const keys = _.keys(config.endpoints);
+  const keys = _.keys(boilerplate.endpoints);
 
   return {
-    viewports: config.viewports,
-    numViewports: config.viewports.length,
+    viewports: backstop.viewports,
+    numViewports: backstop.viewports.length,
     numEndpoints: keys.length,
-    numScenarios: keys.reduce((n, key) => n += config.endpoints[key].length, 0),
+    numScenarios: keys.reduce((n, key) => n += boilerplate.endpoints[key].length, 0),
   }
 })();
 
@@ -19,7 +26,7 @@ let def = (() => {
 describe("ScenarioTest", () => {
 
   beforeEach(async () => {
-    scenarios = await createScenarios("test/sample/config.json", false);
+    scenarios = await createScenarios();
   });
 
   describe("Parse Endpoints", () => {
@@ -51,9 +58,9 @@ describe("ScenarioTest", () => {
     test("Parameter able to define each a viewpoirt in same scenario file", async () => {
 
       def.viewports.forEach(viewport => {
-        expect(scenarios.filter(scenario => scenario.label.match(new RegExp(viewport)))).toEqual(
+        expect(scenarios.filter(scenario => scenario.label.match(new RegExp(viewport.label)))).toEqual(
           expect.arrayContaining([
-            expect.objectContaining({ __defined_at_common_viewport: viewport })
+            expect.objectContaining({ __defined_at_common_viewport: viewport.label })
           ]));
       });
     });
@@ -255,22 +262,22 @@ describe("ScenarioTest", () => {
   describe("Custom scripts", () => {
 
     beforeEach(async () => {
-      notifyCalled = require("./sample/spy").notifyCalled;
+      notifyCalled = require("../backstop_data/boilerplate/spy").notifyCalled;
       notifyCalled.mockClear();
-      jest.mock("./sample/spy");
+      jest.mock("../backstop_data/boilerplate/spy");
     });
 
     test("Scenario able to call onBefore hook that follow the overwrite's priority rules", async () => {
 
-      onBefore = require("../boilerplate/script")("before", "onBefore");
+      onBefore = require("../backstop_data/engine_scripts/puppet/puppeteer_hook")("before", "onBefore");
 
       for (const scenario of scenarios)
         if (scenario.label.match(/scenario_f/))
           await onBefore(null, scenario, null);
  
       const expected = def.viewports.reduce((result, viewport) => {
-        result.push(`CALLED subscenarioScriptBefore FROM /script:scenario_f:${viewport}`);
-        result.push(`CALLED scriptA FROM /script:scenario_f:${viewport}`);
+        result.push(`CALLED subscenarioScriptBefore FROM /script:scenario_f:${viewport.label}`);
+        result.push(`CALLED scriptA FROM /script:scenario_f:${viewport.label}`);
 
         return result;
       }, []);
@@ -280,15 +287,15 @@ describe("ScenarioTest", () => {
 
     test("Scenario able to call onReady hook that follow the overwrite's priority rules", async () => {
 
-      onReady = require("../boilerplate/script")("ready", "onReady");
+      onReady = require("../backstop_data/engine_scripts/puppet/puppeteer_hook")("ready", "onReady");
 
       for (const scenario of scenarios)
         if (scenario.label.match(/scenario_g/))
           await onReady(null, scenario, null);
 
       const expected = def.viewports.reduce((result, viewport) => {
-        result.push(`CALLED subscenarioScriptReady FROM /script:scenario_g:${viewport}`);
-        result.push(`CALLED scriptB FROM /script:scenario_g:${viewport}`);
+        result.push(`CALLED subscenarioScriptReady FROM /script:scenario_g:${viewport.label}`);
+        result.push(`CALLED scriptB FROM /script:scenario_g:${viewport.label}`);
 
         return result;
       }, []);

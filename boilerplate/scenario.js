@@ -1,57 +1,34 @@
 const _ = require("lodash");
-const { requireSafe } = require("./utils");
-const { resolveEntryPoint, fromBoilerplate } = require("./resolve");
-const { ScenarioLabelParser } = require(fromBoilerplate("utils.js"));
 
-/**
- * Property name in scenario(json)
- * that working directory path.
- */
-const WORK_DIR = "$__path";
+const { INC_JSON, COMMON_DIR } = require("./vars");
+const { requireSafe, sanitizeEndpoint } = require("./utils");
+const { getBackstopConfigPath, getBoilerplateConfigPath, cwdBoilerplate } = require("./resolve");
 
-/**
- * Property name in scenario(json)
- * that execute scripts when process in onBefore or onReady.
- */
-const INC_CODE = "$scripts";
+const backstop = require(getBackstopConfigPath());
+const boilerplate = require(getBoilerplateConfigPath());
 
 
 /**
- * Property name in scenario(json)
- * that load the scenario before include different some scenario.
+ * Create scenario each endpoints, scenarios and viewports.
+ * defined scenarios as 'skip' in configfile
+ * will be skip when specific command execute.
  */
-const INC_JSON = "$subscenarios";
+async function createScenarios(when) {
 
-
-/**
- * Create all scenarios.
- * @param {*} boilerplateConfigPath a path for boilerplate config file from command line.
- * @param {*} isReference true if reference mode.
- */
-async function createScenarios(boilerplateConfigPath, isReference) {
-  const { root, endpointRoot, config } = resolveEntryPoint(boilerplateConfigPath);
-
-  // defined scenarios as 'skipOnReference' in configfile
-  // will be skip when reference command execute.
-  if (isReference && config.skipOnReference)
-    for (const skipEndpoint in config.skipOnReference)
-      config.endpoints[skipEndpoint] = _.differenceWith(
-        config.endpoints[skipEndpoint] || [],
-        config.skipOnReference[skipEndpoint],
+  if (boilerplate.skip && boilerplate.skip.when === when)
+    for (const endpoint in boilerplate.skip.endpoints)
+      boilerplate.endpoints[endpoint] = _.differenceWith(
+        boilerplate.endpoints[endpoint],
+        boilerplate.skip.endpoints[endpoint],
         _.isEqual
       );
   
   let result = [];
-  // create scenario each endpoints, scenarios and viewports.
-  for (const endpoint in config.endpoints)
-    for (const scenarioName of config.endpoints[endpoint])
-      for (const vpLabel of config.viewports)
+  for (const endpoint in boilerplate.endpoints)
+    for (const scenarioName of boilerplate.endpoints[endpoint])
+      for (const viewport of backstop.viewports)
         result = result.concat(
-          await createScenario(
-            new ScenarioLabelParser(endpoint, scenarioName, vpLabel, endpointRoot),
-            config,
-            root
-          )
+          await createScenario(new ScenarioID(endpoint, scenarioName, viewport))
         );
 
   return result;
@@ -59,60 +36,58 @@ async function createScenarios(boilerplateConfigPath, isReference) {
 
 
 /**
- * Create a scenario for backstopjs config.
- * @param {ScenarioLabelParser} slp be subject to endpoint
- * @param {object} config
+ * Create a scenario.
+ * @param {ScenarioID} sId be subject to endpoint
  */
-async function createScenario(slp, config, root) {
+async function createScenario(sId) {
 
-  const commonScenario = await requireSafe(slp.createEndpointsFilePath("common.json"));
+  const commonScenario = await requireSafe(cwdBoilerplate(COMMON_DIR, "common.json"));
 
-  const endpointScenario = await requireSafe(slp.createScenarioFilePath());
+  const endpointScenario = await requireSafe(cwdBoilerplate(sId.sanitizedEndpoint, `${sId.scenarioName}.json`));
 
   const scenarios = [
     commonScenario.all || {},
-    commonScenario[slp.vpLabel] || {},
+    commonScenario[sId.viewport.label] || {},
     endpointScenario.all || {},
-    endpointScenario[slp.vpLabel] || {},
+    endpointScenario[sId.viewport.label] || {},
   ];
 
-  const subscenarios = await getSubscenarios(slp, scenarios);
-
+  const subscenarios = await getSubscenarios(sId, scenarios);
+  
   const result = {
-    label       : slp.label,
-    url         : slp.getUrl(config.test),
-    referenceUrl: slp.getUrl(config.reference),
+    label       : sId.label,
+    url         : new URL(sId.endpoint, boilerplate.test).toString(),
+    referenceUrl: new URL(sId.endpoint, boilerplate.reference).toString(),
+    viewports   : [sId.viewport],
 
     ...await merge(scenarios, subscenarios)
   };
-
-  result[WORK_DIR] = root;
 
   return result;
 }
 
 
 /**
- * Load all subscenarios from relational scenairos.
- * @param {ScenarioLabelParser} slp be subject to endpoint
+ * Load subsubscenarios from and common.json endpoint's scenairo.
+ * @param {ScenarioID} sId be subject to endpoint
  * @param {Array} scenarios be subject to relational senarios
  */
-async function getSubscenarios(slp, scenarios) {
+async function getSubscenarios(sId, scenarios) {
   return Promise.all(scenarios.map((scenario, i) => new Promise(async resolve => resolve(
 
-      await _.isArray(scenario[INC_JSON])
-        ? Promise.all(scenario[INC_JSON].map(subscenarioName => new Promise(async innreResolve =>
-            innreResolve({
-              name: subscenarioName,
-              json: await requireSafe(i == 0 || i == 1 // for common file
-                ? slp.createEndpointsFilePath(`${subscenarioName}.json`)
-                : slp.createScenarioFilePath(`${subscenarioName}.json`)
-              )
-            })
-          )))
+    await _.isArray(scenario[INC_JSON])
+      ? Promise.all(scenario[INC_JSON].map(subscenarioName => new Promise(async innreResolve =>
+          innreResolve({
+            name: subscenarioName,
+            json: await requireSafe(i == 0 || i == 1 // for common file
+              ? cwdBoilerplate(COMMON_DIR, `${subscenarioName}.json`)
+              : cwdBoilerplate(sId.sanitizedEndpoint, `${subscenarioName}.json`)
+            )
+          })
+        )))
 
-        : new Promise(innreResolve => innreResolve([])))
-
+      : new Promise(innreResolve => innreResolve([])))
+      
   )));
 }
 
@@ -150,7 +125,7 @@ function merge(scenarios, subscenarios) {
 
 
 /**
- * Merge properties of "from object" to "to object"
+ * Merge properties
  * Able to use custom prefix (-:, +:, =:) each properties.
  * The custom prefix works only Array. 
  * prefix [-:key] remove values from already defined in scenario when equal this property values.
@@ -181,7 +156,7 @@ function _mergeProperties(to, from) {
 
     } else {
       _.isObject(clean.value)
-        ? mergeObject(to, from, key, clean)
+        ? mergeObject(to, key, clean)
         : mergePrimitive(to, clean);
 
     }
@@ -222,11 +197,10 @@ function mergeArray(arrayValues) {
 /**
  * 
  * @param {*} to 
- * @param {*} from 
  * @param {*} key 
  * @param {*} clean 
  */
-function mergeObject(to, from, key, clean) {
+function mergeObject(to, key, clean) {
   console.log("merge not suport for Object.");
   mergePrimitive(to, clean);
 }
@@ -241,13 +215,58 @@ function mergePrimitive(to, clean) {
   clean.value === "$delete" ? delete to[clean.key] : to[clean.key] = clean.value;
 }
 
-module.exports = {
-  WORK_DIR,
-  INC_CODE,
-  INC_JSON,
-  createScenarios,
 
-  test: {
-    createScenario,
+/**
+ * ScenarioID class hold to scenario identify values.
+ */
+class ScenarioID {
+
+  /**
+   * Return label.
+   */
+  get label() {
+    return this._label;
   }
+
+  /**
+   * Return scenario filename.
+   */
+  get scenarioName() {
+    return this._scenarioName;
+  }
+
+  /**
+   * Return viewport.
+   */
+  get viewport() {
+    return this._viewport;
+  }
+
+  /**
+   * Return endpoint path.
+   */
+  get endpoint() {
+    return this._endpoint;
+  }
+
+  /**
+   * Return sanitized endpoint path.
+   */
+  get sanitizedEndpoint() {
+    return this._sanitizedEndpoint;
+  }
+
+  constructor(endpoint, scenarioName, viewport) {
+    this._label = `${endpoint}:${scenarioName}:${viewport.label}`;
+    this._scenarioName = scenarioName;
+    this._viewport = viewport;
+    
+    this._endpoint = endpoint.replace(/^index$/, "/");
+    this._sanitizedEndpoint = sanitizeEndpoint(endpoint);
+  }
+}
+
+
+module.exports = {
+  createScenarios
 };

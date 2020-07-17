@@ -1,5 +1,4 @@
 const fs = require("fs");
-const path = require("path");
 
 
 /**
@@ -22,6 +21,44 @@ function _mkdir(path) {
 
 
 /**
+ * Wrapped fs.readFile by promise.
+ * @param {*} path 
+ */
+function _readFile(path, options) {
+  return new Promise((resolve, reject) => fs.readFile(path, options, (e, data) =>
+    e ? reject(e): resolve(data)
+  ))
+};
+
+
+/**
+ * @param {*} path 
+ */
+async function readFile(path, options = { encoding: "utf-8", flag: "r" }) {
+  return await exists(path, true) ? await _readFile(path, options): "";
+};
+
+
+/**
+ * Wrapped fs.readdir by promise.
+ * @param {*} path 
+ */
+function _readdir(path, options) {
+  return new Promise((resolve, reject) => fs.readdir(path, options, (e, files) =>
+    e ? reject(e): resolve(files)
+  ))
+};
+
+
+/**
+ * @param {*} path 
+ */
+ async function readdir(path, options = { encoding: "utf-8", withFileTypes: true }) {
+  return await exists(path) ? await _readdir(path, options) : [];
+}
+
+
+/**
  * Use utils.exists function before call mkdir.
  * This method able to use async/await.
  * @param {*} path 
@@ -29,7 +66,7 @@ function _mkdir(path) {
  async function mkdir(path) {
   if (!await exists(path)) {
     await _mkdir(path);
-    console.log(`[direcdestry created] ${path}`);
+    console.log(`[directory created] ${path}`);
   }
 }
 
@@ -89,6 +126,24 @@ function unlink(path) {
 
 
 /**
+ * Wrapped fs.rmdir promise.
+ * @param {*} path 
+ */
+function _rmdir(path) {
+  return new Promise((resolve, reject) => fs.rmdir(path, e => e ? reject(e): resolve()));
+}
+
+
+/**
+ * Wrapped fs.rmdir promise.
+ * @param {*} path 
+ */
+async function rmdir(path) {
+  return await exists(path) ? await _rmdir(path): null;
+}
+
+
+/**
  * Return boolean about exists file or directory.
  * @param {*} path 
  */
@@ -112,84 +167,24 @@ async function requireSafe(uri) {
 }
 
 
-/**
- * Command parser and Label management class.
- * This instance parse to endpoint path on http and file.
- */
-class ScenarioLabelParser {
-
-  /**
-   * Return scenario label.
-   */
-  get label() {
-    return this._label;
-  }
-
-  /**
-   * Return scenario filename.
-   */
-  get scenarioName() {
-    return this._scenarioName;
-  }
-
-  /**
-   * Return endpoint using a scenario.
-   */
-  get endpoint() {
-    return this._endpoint;
-  }
-
-  /**
-   * Return viewport label using a scenario.
-   */
-  get vpLabel() {
-    return this._vpLabel;
-  }
-
-  /**
-   * Return endpoints directory path for `require` by nodejs.
-   */
-  createEndpointsFilePath(filename) {
-    return path.join(this._endpointRoot, filename);
-  }
-
-  /**
-   * Return scenario path for `require` by nodejs.
-   */
-  createScenarioFilePath(filename) {
-    return path.join(this._endpointRoot, this._endpointLocal, filename || `${this.scenarioName}.json`);
-  }
-
-  /**
-   * Return endpoint URL with "domain" argument.
-   */
-  getUrl(domain) {
-    return new URL(this.endpoint.replace(/^index$/, "/"), domain).toString();
-  }
-
-  constructor(endpoint, scenarioName, vpLabel, endpointRoot) {
-    this._label = `${endpoint}:${scenarioName}:${vpLabel}`;
-    this._scenarioName = scenarioName;
-    this._vpLabel = vpLabel;
-    
-    this._endpointRoot = endpointRoot;
-    this._endpoint = endpoint;
-    this._endpointLocal = endpoint
-      .replace(/\/#/g, "-")
-      .replace(/\//g, "_")
-      .replace(/#/g, "-")
-      .replace(/_+$/, "")
-      .replace(/^_+/, "");
-  }
+function sanitizeEndpoint(endpoint) {
+  return endpoint
+    .replace(/\/#/g, "-")
+    .replace(/\//g, "_")
+    .replace(/#/g, "-")
+    .replace(/_+$/, "")
+    .replace(/^_+/, "");
 }
 
-
 module.exports = {
-  ScenarioLabelParser,
   mkdir,
   createFile,
   copyFile,
+  readFile,
   unlink,
+  readdir,
+  rmdir,
   exists,
   requireSafe,
-}
+  sanitizeEndpoint,
+};

@@ -1,0 +1,9 @@
+{
+    "all": {
+        "$scripts": [
+            "before:loadCookies",
+            "before:setUserAgent",
+            "ready:clickAndHoverHelper"
+        ]
+    }
+}
