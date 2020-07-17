@@ -11,9 +11,6 @@ const { createScenarios } = require("./scenario.js");
 const backstopPath = getBackstopConfigPath();
 const backstop = require(backstopPath);
 
-const boilerplatePath = getBoilerplateConfigPath();
-const boilerplate = require(boilerplatePath);
-
 switch (commander.command) {
 
   case "init":
@@ -21,6 +18,9 @@ switch (commander.command) {
     break;
 
   case "sync":
+    const boilerplatePath = getBoilerplateConfigPath();
+    const boilerplate = require(boilerplatePath);
+
     syncTemplates(boilerplate);
     break;
 
