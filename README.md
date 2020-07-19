@@ -56,7 +56,7 @@ __テスト実行__
 
 `npm run reference` and  `npm run test`
 
-### <span id="integration">:cl: javascript による backstopjs との統合</span>
+__javascript による backstopjs との統合__
 backstopjs と boilerplate の連携を javascript で行いたい場合は、`init`コマンドで生成される _integration_example.js_ を参考にしてもらえれば良い。
 ```js
 const backstop = require("backstopjs");
@@ -83,7 +83,7 @@ switch (cmd) {
 
 ## <span id="cmd">:cl: コマンド一覧</span>
 package.json内からであれば `bsbl` として呼び出すことができる。
-通常のコマンドラインでは `node_modules/backstopjs_boilerplate/boilerplate/runner.js` に対してサブコマンドを渡す必要がある。
+通常のコマンドラインでは `node_modules/backstopjs_boilerplate/boilerplate/cli.js` に対してサブコマンドを渡す必要がある。
 
 #### init
 `bsbl init [path]`
