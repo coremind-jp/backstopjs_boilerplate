@@ -101,10 +101,15 @@ async function _createEndpointScenario(r, backstop,  boilerplate) {
 
   for (const endpoint in boilerplate.endpoints) {
 
+    const endpoints = boilerplate.endpoints[endpoint];
+
+    if (!endpoints || endpoints.length === 0)
+      continue;
+
     const sanitized = sanitizeEndpoint(endpoint);
     await mkdir(r.cwdBoilerplate(sanitized));
 
-    boilerplate.endpoints[endpoint].forEach(scenarioName => {
+    endpoints.forEach(scenarioName => {
 
       let obj = {};
       for (const viewport of backstop.viewports)

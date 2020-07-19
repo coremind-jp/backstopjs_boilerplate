@@ -18,7 +18,8 @@
     "/script": [
       "scenario_f",
       "scenario_g"
-    ]
+    ],
+    "/not_exists_scenario_file": []
   },
   "skip": {
     "when": "reference",

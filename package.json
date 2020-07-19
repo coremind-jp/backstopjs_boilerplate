@@ -1,6 +1,6 @@
 {
   "name": "backstopjs_boilerplate",
-  "version": "0.10.6",
+  "version": "0.10.7",
   "description": "boilerplate for backstopjs",
   "keywords": [
     "boilerplate",
@@ -8,7 +8,7 @@
   ],
   "author": "Hirotaka Nakahara <nakahara@coremind.jp> (https://coremind.jp)",
   "license": "MIT",
-  "homepage": "https://github.com/coremind-jp/backstopjs_boilerplate",
+  "homepage": "https://coremind-jp.github.io/backstopjs_boilerplate/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/coremind-jp/backstopjs_boilerplate.git"
@@ -23,10 +23,7 @@
   "scripts": {
     "test": "echo See 'sandbox' directory"
   },
-  "devDependencies": {
-    "backstopjs": "^5.0.1",
-    "jest": "^26.1.0"
-  },
+  "devDependencies": {},
   "dependencies": {
     "commander": "^5.1.0",
     "lodash": "^4.17.19",

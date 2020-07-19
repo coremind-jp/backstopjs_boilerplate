@@ -23,6 +23,11 @@ function createScenarios(r, when) {
         boilerplate.skip.endpoints[endpoint],
         _.isEqual
       );
+
+  // Push dummy scenario if not exists scenarios in endpoint. 
+  for (const endpoint in boilerplate.endpoints)
+    if (boilerplate.endpoints[endpoint].length === 0)
+      boilerplate.endpoints[endpoint].push("default");
   
   let result = [];
   for (const endpoint in boilerplate.endpoints)
@@ -45,7 +50,9 @@ function _createScenario(r, sId, boilerplate) {
 
   const commonScenario = require(r.cwdBoilerplate(COMMON_DIR, COMMON_SCENARIO));
 
-  const endpointScenario = require(r.cwdBoilerplate(sId.sanitizedEndpoint, `${sId.scenarioName}.json`));
+  const endpointScenario = sId.scenarioName === "default"
+    ? {}
+    : require(r.cwdBoilerplate(sId.sanitizedEndpoint, `${sId.scenarioName}.json`));
 
   const scenarios = [
     commonScenario.all || {},
