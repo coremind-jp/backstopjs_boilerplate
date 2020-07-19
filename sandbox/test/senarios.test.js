@@ -16,7 +16,8 @@ let def = (() => {
     viewports: backstop.viewports,
     numViewports: backstop.viewports.length,
     numEndpoints: keys.length,
-    numScenarios: keys.reduce((n, key) => n += boilerplate.endpoints[key].length, 0),
+    numScenarios: keys.reduce((n, key) =>
+      n += (boilerplate.endpoints[key].length || 1), 0),
   }
 })();
 
@@ -29,24 +30,24 @@ describe("ScenarioTest", () => {
 
   describe("Parse Endpoints", () => {
 
-    test(`Scenario each have just one viewpoirt.`, async () => {
+    test(`Scenario has each just one viewpoirt.`, async () => {
       expect(_.uniqBy(scenarios, scenario => scenario.viewports.length)).toHaveLength(1);
     });
 
-    test(`Sample have ${def.numEndpoints} endpoints.`, async () => {
+    test(`Sample has ${def.numEndpoints} endpoints.`, async () => {
       expect(_.uniqBy(scenarios, scenario => scenario.url)).toHaveLength(def.numEndpoints);
     });
 
-    test(`Sample have ${def.numViewports} viewpoirts.`, async () => {
+    test(`Sample has ${def.numViewports} viewpoirts.`, async () => {
       expect(_.uniqBy(scenarios, scenario => scenario.viewports[0].label)).toHaveLength(def.numViewports);
     });
 
-    test(`Sample have ${def.numScenarios} unique scenarios.`, async () => {
+    test(`Sample has ${def.numScenarios} unique scenarios.`, async () => {
       expect(_.uniqBy(scenarios, scenario => scenario.label.replace(/(tablet|phone)/, "")))
         .toHaveLength(def.numScenarios);
     });
 
-    test(`Sample have ${def.numScenarios * def.numViewports} scenarios because defined ${def.numScenarios} unique scenarios each ${def.numViewports} viewports`,
+    test(`Sample has ${def.numScenarios * def.numViewports} scenarios because defined ${def.numScenarios} unique scenarios each ${def.numViewports} viewports`,
       async () => { expect(scenarios).toHaveLength(def.numScenarios * def.numViewports); });
   });
 
@@ -71,6 +72,16 @@ describe("ScenarioTest", () => {
         } else {
           expect(scenario.__delete_me).toEqual("some value");
         }
+      });
+    });
+
+    test("Create a scenario automatically if not exists scenarios in endpoint'", async () => {
+
+      def.viewports.forEach(viewport => {
+        expect(scenarios.filter(scenario => scenario.label.match(new RegExp(viewport.label)))).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({ label: `/not_exists_scenario_file:default:${viewport.label}` })
+          ]));
       });
     });
   });

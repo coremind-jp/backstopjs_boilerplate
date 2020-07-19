@@ -158,7 +158,8 @@ backstopjs 自体が提供するヘッドレスブラウザに対する操作は
     ],
     "/some_endpoint/#some_link": [
       "some_scenario_e"
-    ]
+    ],
+    "/endpoint_have_not_scenario": []
   },
   "skip": {
     "when": "reference",
@@ -169,7 +170,7 @@ backstopjs 自体が提供するヘッドレスブラウザに対する操作は
 }
 ```
 
-単純にスクリーンショットを取るだけの場合は設定ファイルの _test_, _reference_ に URL、_endpoints_ に適当なエンドポイントとシナリオ名を記述するだけでテストが行える状態になる。
+単純にスクリーンショットを取るだけの場合は設定ファイルの _test_, _reference_ に URL、_endpoints_ に適当なエンドポイントと空の配列を記述するだけでテストが行える状態になる。
 
 ###### templateType
 コマンドの実行によって生成されるシナリオの初期内容を変更する為の値。[ソース](https://github.com/coremind-jp/backstopjs_boilerplate/blob/master/boilerplate/templates/endpoint.json)から使用可能なタイプとその内容を確認する。
@@ -178,7 +179,11 @@ backstopjs 自体が提供するヘッドレスブラウザに対する操作は
 backstopjs における同パラメータと同義。boilerplate では test または reference に対して同一ドメイン内のエンドポイントに焦点を充てている為、シナリオ毎に異なるドメインを有するシナリオは生成できない。
 
 ###### endpoints
-key にはスクリーンショットを実行する対象パスを、value にはその対象パスに対するシナリオを配列で記述する。同一ページに対して backstopjs が提供する機能(selectors) では対応できないマルチスクリーンショットを実行したい場合に個別にシナリオ定義を追記する事で実現する。またページ内リンクやネストしたパスを持つエンドポイント（例では /some_endpoint/some_nested_endpoint や /some_endpoint/#some_link）はその全部を一つのエンドポイントとして扱う。index は特殊な値で `/` に対する定義と解釈される。
+key にはスクリーンショットを実行する対象パスを、value にはその対象パスに対するシナリオを配列で記述する。
+
+同一ページに対して backstopjs が提供する機能(selectors) では対応できないマルチスクリーンショットを実行したい場合に個別にシナリオ定義を追記して実現する。またページ内リンクやネストしたパスを持つエンドポイント（例では _/some_endpoint/some_nested_endpoint_ や _/some_endpoint/#some_link_）はその全部を一つのエンドポイントとして扱う。_index_ は特殊な値で `/` に対する定義と解釈される。
+
+空配列（例では _/endpoint_have_not_scenario_）として定義すると`test` コマンドや `reference` コマンドで出力されるシナリオにのみ含まれ、テンプレートファイル自体は生成されない。
 
 ###### skip
 _when_ には `test` または `reference` を指定する。指定された方でシナリオの生成が行われた場合 _skip_ 内の _endpoints_ 以下とマッチするシナリオを除外する。boilerplate における `test`, `reference` の処理の違いはこの点のみなっている。この機能はシナリオを作成している最中に _test_ または _reference_ どちらかについて特定のシナリオを実行したくない場合に設定として制御できると重宝すると思ったので実装した。

@@ -8,7 +8,7 @@
   ],
   "author": "Hirotaka Nakahara <nakahara@coremind.jp> (https://coremind.jp)",
   "license": "MIT",
-  "homepage": "https://github.com/coremind-jp/backstopjs_boilerplate",
+  "homepage": "https://coremind-jp.github.io/backstopjs_boilerplate/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/coremind-jp/backstopjs_boilerplate.git"
@@ -24,8 +24,6 @@
     "test": "echo See 'sandbox' directory"
   },
   "devDependencies": {
-    "backstopjs": "^5.0.1",
-    "jest": "^26.1.0"
   },
   "dependencies": {
     "commander": "^5.1.0",
