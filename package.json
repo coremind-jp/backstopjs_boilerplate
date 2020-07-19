@@ -1,6 +1,6 @@
 {
   "name": "backstopjs_boilerplate",
-  "version": "0.10.6",
+  "version": "0.10.7",
   "description": "boilerplate for backstopjs",
   "keywords": [
     "boilerplate",
@@ -23,8 +23,7 @@
   "scripts": {
     "test": "echo See 'sandbox' directory"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "dependencies": {
     "commander": "^5.1.0",
     "lodash": "^4.17.19",
