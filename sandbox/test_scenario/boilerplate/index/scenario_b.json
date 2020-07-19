@@ -4,10 +4,10 @@
             "for_endpoint_all"
         ]
     },
-    "desktop": {
+    "tablet": {
         "$scripts": [],
         "$subscenarios": [
-            "for_endpoint_desktop"
+            "for_endpoint_tablet"
         ]
     },
     "phone": {

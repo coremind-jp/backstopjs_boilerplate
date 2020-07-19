@@ -6,10 +6,10 @@
         ],
         "__delete_me": "$delete"
     },
-    "desktop": {
+    "tablet": {
         "$scripts": [],
         "$subscenarios": [
-            "for_endpoint_desktop"
+            "for_endpoint_tablet"
         ]
     },
     "phone": {

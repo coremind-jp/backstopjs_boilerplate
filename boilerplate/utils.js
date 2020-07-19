@@ -158,15 +158,6 @@ async function exists(path, log = false) {
 }
 
 
-/**
- * Use utils.exists function before call require.
- * @param {*} uri 
- */
-async function requireSafe(uri) {
-  return await exists(uri, true) ? require(uri): {}
-}
-
-
 function sanitizeEndpoint(endpoint) {
   return endpoint
     .replace(/\/#/g, "-")
@@ -175,6 +166,7 @@ function sanitizeEndpoint(endpoint) {
     .replace(/_+$/, "")
     .replace(/^_+/, "");
 }
+
 
 module.exports = {
   mkdir,
@@ -185,6 +177,5 @@ module.exports = {
   readdir,
   rmdir,
   exists,
-  requireSafe,
   sanitizeEndpoint,
 };

@@ -1,15 +1,13 @@
-process.argv = ['node', 'jest', 'init', 'backstop.json'];
-
 const _ = require("lodash");
-const { createScenarios } = require("../boilerplate/scenario");
 
-const resolve = require("../boilerplate/resolve");
-const backstop = require(resolve.getBackstopConfigPath());
-const boilerplate = require(resolve.getBoilerplateConfigPath());
+const { createScenarios } = require("backstopjs_boilerplate/boilerplate/scenario");
+const Resolver = require("backstopjs_boilerplate/boilerplate//resolver");
 
+const r = new Resolver("backstop.json");
+const backstop = require(r.backstop);
+const boilerplate = require(r.boilerplate);
 
 let onBefore, onReady, scenarios;
-
 
 let def = (() => {
   const keys = _.keys(boilerplate.endpoints);
@@ -26,7 +24,7 @@ let def = (() => {
 describe("ScenarioTest", () => {
 
   beforeEach(async () => {
-    scenarios = await createScenarios();
+    scenarios = createScenarios(r);
   });
 
   describe("Parse Endpoints", () => {
@@ -44,7 +42,7 @@ describe("ScenarioTest", () => {
     });
 
     test(`Sample have ${def.numScenarios} unique scenarios.`, async () => {
-      expect(_.uniqBy(scenarios, scenario => scenario.label.replace(/(desktop|phone)/, "")))
+      expect(_.uniqBy(scenarios, scenario => scenario.label.replace(/(tablet|phone)/, "")))
         .toHaveLength(def.numScenarios);
     });
 

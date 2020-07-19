@@ -1,0 +1,21 @@
+{
+  "name": "sandbox",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "enable-link": "cd ../ && npm link && cd sandbox && npm link backstopjs_boilerplate",
+    "chain": "sh ./chain.sh",
+    "chain-integration": "sh ./chain_integration.sh",
+    "test": "sh ./test.sh",
+    "disable-link": "cd ../ && npm unlink && cd sandbox && npm unlink backstopjs_boilerplate",
+    "jest": "jest --silent"
+  },
+  "author": "",
+  "license": "",
+  "devDependencies": {
+    "backstopjs": "^5.0.1",
+    "jest": "^26.1.0"
+  },
+  "dependencies": {}
+}

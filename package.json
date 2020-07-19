@@ -16,13 +16,12 @@
   "bugs": {
     "url": "https://github.com/coremind-jp/backstopjs_boilerplate/issues"
   },
+  "main": "index.js",
   "bin": {
-    "bsbl": "boilerplate/runner.js"
+    "bsbl": "boilerplate/cli.js"
   },
   "scripts": {
-    "boilerplate": "node boilerplate/runner.js",
-    "backstop": "node node_modules/backstopjs/runner.js",
-    "test": "jest --silent"
+    "test": "echo See 'sandbox' directory"
   },
   "devDependencies": {
     "backstopjs": "^5.0.1",

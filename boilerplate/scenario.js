@@ -1,19 +1,20 @@
 const _ = require("lodash");
 
-const { INC_JSON, COMMON_DIR } = require("./vars");
-const { requireSafe, sanitizeEndpoint } = require("./utils");
-const { getBackstopConfigPath, getBoilerplateConfigPath, cwdBoilerplate } = require("./resolve");
-
-const backstop = require(getBackstopConfigPath());
-const boilerplate = require(getBoilerplateConfigPath());
+const { INC_JSON, COMMON_DIR, COMMON_SCENARIO } = require("./vars");
+const { sanitizeEndpoint } = require("./utils");
 
 
 /**
  * Create scenario each endpoints, scenarios and viewports.
  * defined scenarios as 'skip' in configfile
  * will be skip when specific command execute.
+ * @param {Resolver} r Resolver instance
+ * @param {string} when 
  */
-async function createScenarios(when) {
+function createScenarios(r, when) {
+
+  const backstop = require(r.backstop);
+  const boilerplate = require(r.boilerplate);
 
   if (boilerplate.skip && boilerplate.skip.when === when)
     for (const endpoint in boilerplate.skip.endpoints)
@@ -28,7 +29,7 @@ async function createScenarios(when) {
     for (const scenarioName of boilerplate.endpoints[endpoint])
       for (const viewport of backstop.viewports)
         result = result.concat(
-          await createScenario(new ScenarioID(endpoint, scenarioName, viewport))
+          _createScenario(r, new ScenarioID(endpoint, scenarioName, viewport), boilerplate)
         );
 
   return result;
@@ -37,13 +38,14 @@ async function createScenarios(when) {
 
 /**
  * Create a scenario.
- * @param {ScenarioID} sId be subject to endpoint
+ * @param {Resolver} r Resolver instance
+ * @param {ScenarioID} sId ScenarioID instance
  */
-async function createScenario(sId) {
+function _createScenario(r, sId, boilerplate) {
 
-  const commonScenario = await requireSafe(cwdBoilerplate(COMMON_DIR, "common.json"));
+  const commonScenario = require(r.cwdBoilerplate(COMMON_DIR, COMMON_SCENARIO));
 
-  const endpointScenario = await requireSafe(cwdBoilerplate(sId.sanitizedEndpoint, `${sId.scenarioName}.json`));
+  const endpointScenario = require(r.cwdBoilerplate(sId.sanitizedEndpoint, `${sId.scenarioName}.json`));
 
   const scenarios = [
     commonScenario.all || {},
@@ -52,7 +54,7 @@ async function createScenario(sId) {
     endpointScenario[sId.viewport.label] || {},
   ];
 
-  const subscenarios = await getSubscenarios(sId, scenarios);
+  const subscenarios = _getSubscenarios(r, sId, scenarios);
   
   const result = {
     label       : sId.label,
@@ -60,7 +62,7 @@ async function createScenario(sId) {
     referenceUrl: new URL(sId.endpoint, boilerplate.reference).toString(),
     viewports   : [sId.viewport],
 
-    ...await merge(scenarios, subscenarios)
+    ...merge(scenarios, subscenarios)
   };
 
   return result;
@@ -69,26 +71,22 @@ async function createScenario(sId) {
 
 /**
  * Load subsubscenarios from and common.json endpoint's scenairo.
- * @param {ScenarioID} sId be subject to endpoint
+ * @param {Resolver} r Resolver instance
+ * @param {ScenarioID} sId ScenarioID instance
  * @param {Array} scenarios be subject to relational senarios
  */
-async function getSubscenarios(sId, scenarios) {
-  return Promise.all(scenarios.map((scenario, i) => new Promise(async resolve => resolve(
+function _getSubscenarios(r, sId, scenarios) {
+  return scenarios.map((scenario, i) => _.isArray(scenario[INC_JSON])
+    ? scenario[INC_JSON].map(subscenarioName => ({
+        name: subscenarioName,
+        json: require(i == 0 || i == 1 // for common file
+          ? r.cwdBoilerplate(COMMON_DIR, `${subscenarioName}.json`)
+          : r.cwdBoilerplate(sId.sanitizedEndpoint, `${subscenarioName}.json`)
+        )
+      }))
 
-    await _.isArray(scenario[INC_JSON])
-      ? Promise.all(scenario[INC_JSON].map(subscenarioName => new Promise(async innreResolve =>
-          innreResolve({
-            name: subscenarioName,
-            json: await requireSafe(i == 0 || i == 1 // for common file
-              ? cwdBoilerplate(COMMON_DIR, `${subscenarioName}.json`)
-              : cwdBoilerplate(sId.sanitizedEndpoint, `${subscenarioName}.json`)
-            )
-          })
-        )))
-
-      : new Promise(innreResolve => innreResolve([])))
-      
-  )));
+    : []
+  );
 }
 
 

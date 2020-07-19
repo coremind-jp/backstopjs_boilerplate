@@ -3,68 +3,68 @@ const rimraf = require("rimraf");
 const path = require("path");
 
 const {
-  COMMON_SCENARIO, ENDPOINT_SCENARIO, ENGINE_SCRIPT,
-  CONF_FILE_NAME, PUPPETEER_HOOK, INMDENT_JSON, COMMON_DIR
+  COMMON_SCENARIO, ENDPOINT_SCENARIO, ENGINE_SCRIPT, INTEGRATION_EXAMPLE,
+  BOILERPLATE_CONFIG, PUPPETEER_HOOK, INMDENT_JSON, COMMON_DIR
 } = require("./vars");
 
-const { readdir, mkdir, copyFile, createFile, unlink, sanitizeEndpoint } = require("./utils");
-const { getBackstopConfigPath, pkgTemplates, cwdPuppetScript, cwdBoilerplate } = require("./resolve");
-
-const backstop = require(getBackstopConfigPath());
+const {
+  readdir, mkdir, copyFile, createFile, unlink,
+  sanitizeEndpoint
+} = require("./utils");
 
 
 /**
  * initialize boilerplate.
+ * @param {Resolver} r Resolver instance
  */
-async function initialize() {
-  await mkdir(cwdBoilerplate());
+async function initialize(r) {
 
-  copyFile(pkgTemplates(CONF_FILE_NAME), cwdBoilerplate(CONF_FILE_NAME));
-  copyFile(pkgTemplates(ENGINE_SCRIPT), cwdBoilerplate(`${backstop.engine}_scripts.js`));
+  const backstop = require(r.backstop);
 
-  copyFile(pkgTemplates(PUPPETEER_HOOK), cwdPuppetScript(PUPPETEER_HOOK));
-  _replaceHook("before", "onBefore");
-  _replaceHook("ready", "onReady");
+  await mkdir(r.cwdBoilerplate());
+
+  copyFile(r.template(INTEGRATION_EXAMPLE), r.joinCwd(INTEGRATION_EXAMPLE));
+  copyFile(r.template(BOILERPLATE_CONFIG), r.cwdBoilerplate(BOILERPLATE_CONFIG));
+  copyFile(r.template(ENGINE_SCRIPT),  r.cwdBoilerplate(`${backstop.engine}_scripts.js`));
+  copyFile(r.template(PUPPETEER_HOOK), r.cwdPuppetScript(PUPPETEER_HOOK));
+
+  _replaceHook(r, "before", "onBefore");
+  _replaceHook(r, "ready", "onReady");
 };
 
 
 /**
  * Synchronize between config and directory.
- * @param {*} boilerplate boilerplate config object
+ * @param {Resolver} r Resolver instance
  */
-async function syncTemplates(boilerplate) {
-  
-  _createCommonScenario();
+async function syncTemplates(r) {
 
-  for (const endpoint in boilerplate.endpoints) {
-    await mkdir(cwdBoilerplate(endpoint));
-
-    boilerplate.endpoints[endpoint].forEach(scenarioName =>
-      _createEndpointScenario(cwdBoilerplate(endpoint, `${scenarioName}.json`), boilerplate)
-    );
-  }
+  const backstop = require(r.backstop);
+  const boilerplate = require(r.boilerplate);
   
-  _removeDirectories(cwdBoilerplate(), _.keys(boilerplate.endpoints));
+  _createCommonScenario(r, backstop);
+
+  _createEndpointScenario(r, backstop, boilerplate);
+
+  _removeDirectories(r.cwdBoilerplate(), _.keys(boilerplate.endpoints));
 };
 
 
-async function _replaceHook(prefix, file) {
-  console.log(`[${file}.js] backup`);
+async function _replaceHook(r, prefix, file) {
 
-  await copyFile(cwdPuppetScript(`${file}.js`), cwdPuppetScript(`${file}.js.backup`));
+  await copyFile(r.cwdPuppetScript(`${file}.js`), r.cwdPuppetScript(`${file}.js.backup`));
 
-  await unlink(cwdPuppetScript(`${file}.js`));
+  await unlink(r.cwdPuppetScript(`${file}.js`));
 
   await createFile(
-    cwdPuppetScript(`${file}.js`),
+    r.cwdPuppetScript(`${file}.js`),
     `module.exports = require("./${PUPPETEER_HOOK}")("${prefix}", "${file}")`
   );
-
-  console.log(`[${file}.js] recreated`);
 };
 
 
 async function _removeDirectories(parent, children) {
+
   const whiteList = [COMMON_DIR];
   const entities = await readdir(parent);
 
@@ -80,25 +80,42 @@ async function _removeDirectories(parent, children) {
 }
 
 
-async function _createEndpointScenario(cwdPath, boilerplate) {
-  const template = require(pkgTemplates(ENDPOINT_SCENARIO));
-  let reslult = {};
+async function _createCommonScenario(r, backstop) {
 
-  for (const vpLabel of backstop.viewports)
-    reslult[vpLabel] = template[boilerplate.templateType] || template.max;
-
-  createFile(cwdPath, JSON.stringify(reslult, null, INMDENT_JSON));
-}
-
-
-async function _createCommonScenario() {
-  const template = require(pkgTemplates(COMMON_SCENARIO));
+  const template = require(r.template(COMMON_SCENARIO));
 
   for (const vpLabel of backstop.viewports)
     template[vpLabel.label] = { userAgent: "" };
 
-  await mkdir(cwdBoilerplate(COMMON_DIR));
-  createFile(cwdBoilerplate(COMMON_DIR, COMMON_SCENARIO), JSON.stringify(template, null, INMDENT_JSON));
+  await mkdir(r.cwdBoilerplate(COMMON_DIR));
+  createFile(
+    r.cwdBoilerplate(COMMON_DIR, COMMON_SCENARIO),
+    JSON.stringify(template, null, INMDENT_JSON)
+  );
+}
+
+
+async function _createEndpointScenario(r, backstop,  boilerplate) {
+
+  const template = require(r.template(ENDPOINT_SCENARIO))[boilerplate.templateType] || {};
+
+  for (const endpoint in boilerplate.endpoints) {
+
+    const sanitized = sanitizeEndpoint(endpoint);
+    await mkdir(r.cwdBoilerplate(sanitized));
+
+    boilerplate.endpoints[endpoint].forEach(scenarioName => {
+
+      let obj = {};
+      for (const viewport of backstop.viewports)
+        obj[viewport.label] = template;
+
+      createFile(
+        r.cwdBoilerplate(sanitized, `${scenarioName}.json`),
+        JSON.stringify(obj, null, INMDENT_JSON)
+      )
+    });
+  }
 }
 
 
