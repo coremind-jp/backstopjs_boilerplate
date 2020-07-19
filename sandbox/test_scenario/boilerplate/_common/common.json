@@ -11,20 +11,20 @@
         "__overwrite_me": "overwrite_by_common",
         "__overwrite_me_with_common": "overwrite_by_common"
     },
-    "desktop": {
+    "tablet": {
         "userAgent": "",
         "viewports": [
             {
-                "label": "desktop",
+                "label": "tablet",
                 "width": 1024,
                 "height": 768
             }
         ],
 
         "$subscenarios": [
-            "for_common_desktop"
+            "for_common_tablet"
         ],
-        "__defined_at_common_viewport": "desktop"
+        "__defined_at_common_viewport": "tablet"
     },
     "phone": {
         "userAgent": "",

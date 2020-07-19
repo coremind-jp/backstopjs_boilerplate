@@ -1,3 +1,6 @@
+#!/usr/bin/env node
+'use strict'
+
 function validateCommand(value) {
   if (value.match(/(init|sync|test|reference)/))
     return value;
@@ -15,17 +18,13 @@ function validateConfig(config) {
   }
 };
 
-module.exports = (result => {
-
-  require("commander")
-    .version(require("../package.json").version)
-    .arguments("<command> [config]")
-    .action((command, config) => {
-      result.command = validateCommand(command);
-      result.config = validateConfig(config || "backstop.json");
-    })
-    .parse(process.argv);
-
-  return result;
-
-})({});
+require("commander")
+  .version(require("../package.json").version)
+  .arguments("<command> [config]")
+  .action(async (command, config) => {
+    await require("../")(
+      validateCommand(command),
+      validateConfig(config || "backstop.json")
+    );
+  })
+  .parse(process.argv);

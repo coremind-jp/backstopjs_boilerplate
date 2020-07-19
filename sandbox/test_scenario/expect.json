@@ -1,0 +1,823 @@
+{
+    "id": "backstop_default",
+    "viewports": [
+        {
+            "label": "phone",
+            "width": 320,
+            "height": 480
+        },
+        {
+            "label": "tablet",
+            "width": 1024,
+            "height": 768
+        }
+    ],
+    "onBeforeScript": "puppet/onBefore.js",
+    "onReadyScript": "puppet/onReady.js",
+    "scenarios": [
+        {
+            "label": "index:scenario_a:phone",
+            "url": "https://coremind-jp.github.io/",
+            "referenceUrl": "https://coremind-jp.github.io/",
+            "viewports": [
+                {
+                    "label": "phone",
+                    "width": 1024,
+                    "height": 768
+                }
+            ],
+            "__defined_at_common_sub_all": "all",
+            "__overwrite_me": "overwrite_by_common",
+            "__overwrite_me_with_common": "overwrite_by_common",
+            "__overwrite_me_with_common_sub": "overwrite_by_common_sub_second",
+            "__overwrite_me_with_endpoint": null,
+            "__overwrite_me_with_endpoint_sub": null,
+            "__merge_me": [
+                "defined_at_common_sub",
+                "defined_at_common"
+            ],
+            "__replace_me": [
+                "defined_at_common_sub"
+            ],
+            "__remove_me": [
+                "defined_at_common_sub"
+            ],
+            "__defined_at_common_all": true,
+            "$subscenarios": [
+                "for_common_all",
+                "for_common_merge",
+                "for_common_overwrite_first",
+                "for_common_overwrite_second",
+                "for_common_phone",
+                "for_endpoint_all",
+                "for_endpoint_phone"
+            ],
+            "__defined_at_common_sub_viewport": "phone",
+            "userAgent": "",
+            "__defined_at_common_viewport": "phone",
+            "__defined_at_endpoint_sub_all": "all",
+            "__defined_at_endpoint_sub_viewport": "phone",
+            "$scripts": []
+        },
+        {
+            "label": "index:scenario_a:tablet",
+            "url": "https://coremind-jp.github.io/",
+            "referenceUrl": "https://coremind-jp.github.io/",
+            "viewports": [
+                {
+                    "label": "tablet",
+                    "width": 1024,
+                    "height": 768
+                }
+            ],
+            "__defined_at_common_sub_all": "all",
+            "__overwrite_me": "overwrite_by_common",
+            "__overwrite_me_with_common": "overwrite_by_common",
+            "__overwrite_me_with_common_sub": "overwrite_by_common_sub_second",
+            "__overwrite_me_with_endpoint": null,
+            "__overwrite_me_with_endpoint_sub": null,
+            "__merge_me": [
+                "defined_at_common_sub",
+                "defined_at_common"
+            ],
+            "__replace_me": [
+                "defined_at_common_sub"
+            ],
+            "__remove_me": [
+                "defined_at_common_sub"
+            ],
+            "__defined_at_common_all": true,
+            "$subscenarios": [
+                "for_common_all",
+                "for_common_merge",
+                "for_common_overwrite_first",
+                "for_common_overwrite_second",
+                "for_common_tablet",
+                "for_endpoint_all",
+                "for_endpoint_tablet"
+            ],
+            "__defined_at_common_sub_viewport": "tablet",
+            "userAgent": "",
+            "__defined_at_common_viewport": "tablet",
+            "__defined_at_endpoint_sub_all": "all",
+            "__defined_at_endpoint_sub_viewport": "tablet",
+            "$scripts": []
+        },
+        {
+            "label": "index:scenario_b:phone",
+            "url": "https://coremind-jp.github.io/",
+            "referenceUrl": "https://coremind-jp.github.io/",
+            "viewports": [
+                {
+                    "label": "phone",
+                    "width": 1024,
+                    "height": 768
+                }
+            ],
+            "__defined_at_common_sub_all": "all",
+            "__delete_me": "some value",
+            "__overwrite_me": "overwrite_by_common",
+            "__overwrite_me_with_common": "overwrite_by_common",
+            "__overwrite_me_with_common_sub": "overwrite_by_common_sub_second",
+            "__overwrite_me_with_endpoint": null,
+            "__overwrite_me_with_endpoint_sub": null,
+            "__merge_me": [
+                "defined_at_common_sub",
+                "defined_at_common"
+            ],
+            "__replace_me": [
+                "defined_at_common_sub"
+            ],
+            "__remove_me": [
+                "defined_at_common_sub"
+            ],
+            "__defined_at_common_all": true,
+            "$subscenarios": [
+                "for_common_all",
+                "for_common_merge",
+                "for_common_overwrite_first",
+                "for_common_overwrite_second",
+                "for_common_phone",
+                "for_endpoint_all",
+                "for_endpoint_phone"
+            ],
+            "__defined_at_common_sub_viewport": "phone",
+            "userAgent": "",
+            "__defined_at_common_viewport": "phone",
+            "__defined_at_endpoint_sub_all": "all",
+            "__defined_at_endpoint_sub_viewport": "phone",
+            "$scripts": []
+        },
+        {
+            "label": "index:scenario_b:tablet",
+            "url": "https://coremind-jp.github.io/",
+            "referenceUrl": "https://coremind-jp.github.io/",
+            "viewports": [
+                {
+                    "label": "tablet",
+                    "width": 1024,
+                    "height": 768
+                }
+            ],
+            "__defined_at_common_sub_all": "all",
+            "__delete_me": "some value",
+            "__overwrite_me": "overwrite_by_common",
+            "__overwrite_me_with_common": "overwrite_by_common",
+            "__overwrite_me_with_common_sub": "overwrite_by_common_sub_second",
+            "__overwrite_me_with_endpoint": null,
+            "__overwrite_me_with_endpoint_sub": null,
+            "__merge_me": [
+                "defined_at_common_sub",
+                "defined_at_common"
+            ],
+            "__replace_me": [
+                "defined_at_common_sub"
+            ],
+            "__remove_me": [
+                "defined_at_common_sub"
+            ],
+            "__defined_at_common_all": true,
+            "$subscenarios": [
+                "for_common_all",
+                "for_common_merge",
+                "for_common_overwrite_first",
+                "for_common_overwrite_second",
+                "for_common_tablet",
+                "for_endpoint_all",
+                "for_endpoint_tablet"
+            ],
+            "__defined_at_common_sub_viewport": "tablet",
+            "userAgent": "",
+            "__defined_at_common_viewport": "tablet",
+            "__defined_at_endpoint_sub_all": "all",
+            "__defined_at_endpoint_sub_viewport": "tablet",
+            "$scripts": []
+        },
+        {
+            "label": "/overwrite:scenario_c:phone",
+            "url": "https://coremind-jp.github.io/overwrite",
+            "referenceUrl": "https://coremind-jp.github.io/overwrite",
+            "viewports": [
+                {
+                    "label": "phone",
+                    "width": 1024,
+                    "height": 768
+                }
+            ],
+            "__defined_at_common_sub_all": "all",
+            "__delete_me": "some value",
+            "__overwrite_me": "overwrite_by_endpoint",
+            "__overwrite_me_with_common": "overwrite_by_common",
+            "__overwrite_me_with_common_sub": "overwrite_by_common_sub_second",
+            "__overwrite_me_with_endpoint": "overwrite_by_endpoint",
+            "__overwrite_me_with_endpoint_sub": "overwrite_by_endpoint_sub",
+            "__merge_me": [
+                "defined_at_common_sub",
+                "defined_at_common"
+            ],
+            "__replace_me": [
+                "defined_at_common_sub"
+            ],
+            "__remove_me": [
+                "defined_at_common_sub"
+            ],
+            "__defined_at_common_all": true,
+            "$subscenarios": [
+                "for_common_all",
+                "for_common_merge",
+                "for_common_overwrite_first",
+                "for_common_overwrite_second",
+                "for_common_phone",
+                "for_endpoint_overwrite"
+            ],
+            "__defined_at_common_sub_viewport": "phone",
+            "userAgent": "",
+            "__defined_at_common_viewport": "phone"
+        },
+        {
+            "label": "/overwrite:scenario_c:tablet",
+            "url": "https://coremind-jp.github.io/overwrite",
+            "referenceUrl": "https://coremind-jp.github.io/overwrite",
+            "viewports": [
+                {
+                    "label": "tablet",
+                    "width": 1024,
+                    "height": 768
+                }
+            ],
+            "__defined_at_common_sub_all": "all",
+            "__delete_me": "some value",
+            "__overwrite_me": "overwrite_by_endpoint",
+            "__overwrite_me_with_common": "overwrite_by_common",
+            "__overwrite_me_with_common_sub": "overwrite_by_common_sub_second",
+            "__overwrite_me_with_endpoint": "overwrite_by_endpoint",
+            "__overwrite_me_with_endpoint_sub": "overwrite_by_endpoint_sub",
+            "__merge_me": [
+                "defined_at_common_sub",
+                "defined_at_common"
+            ],
+            "__replace_me": [
+                "defined_at_common_sub"
+            ],
+            "__remove_me": [
+                "defined_at_common_sub"
+            ],
+            "__defined_at_common_all": true,
+            "$subscenarios": [
+                "for_common_all",
+                "for_common_merge",
+                "for_common_overwrite_first",
+                "for_common_overwrite_second",
+                "for_common_tablet",
+                "for_endpoint_overwrite"
+            ],
+            "__defined_at_common_sub_viewport": "tablet",
+            "userAgent": "",
+            "__defined_at_common_viewport": "tablet"
+        },
+        {
+            "label": "/overwrite:scenario_d:phone",
+            "url": "https://coremind-jp.github.io/overwrite",
+            "referenceUrl": "https://coremind-jp.github.io/overwrite",
+            "viewports": [
+                {
+                    "label": "phone",
+                    "width": 1024,
+                    "height": 768
+                }
+            ],
+            "__defined_at_common_sub_all": "all",
+            "__delete_me": "some value",
+            "__overwrite_me": "overwrite_by_endpoint_sub",
+            "__overwrite_me_with_common": "overwrite_by_common",
+            "__overwrite_me_with_common_sub": "overwrite_by_common_sub_second",
+            "__overwrite_me_with_endpoint": null,
+            "__overwrite_me_with_endpoint_sub": "overwrite_by_endpoint_sub",
+            "__merge_me": [
+                "defined_at_common_sub",
+                "defined_at_common"
+            ],
+            "__replace_me": [
+                "defined_at_common_sub"
+            ],
+            "__remove_me": [
+                "defined_at_common_sub"
+            ],
+            "__defined_at_common_all": true,
+            "$subscenarios": [
+                "for_common_all",
+                "for_common_merge",
+                "for_common_overwrite_first",
+                "for_common_overwrite_second",
+                "for_common_phone",
+                "for_endpoint_overwrite"
+            ],
+            "__defined_at_common_sub_viewport": "phone",
+            "userAgent": "",
+            "__defined_at_common_viewport": "phone"
+        },
+        {
+            "label": "/overwrite:scenario_d:tablet",
+            "url": "https://coremind-jp.github.io/overwrite",
+            "referenceUrl": "https://coremind-jp.github.io/overwrite",
+            "viewports": [
+                {
+                    "label": "tablet",
+                    "width": 1024,
+                    "height": 768
+                }
+            ],
+            "__defined_at_common_sub_all": "all",
+            "__delete_me": "some value",
+            "__overwrite_me": "overwrite_by_endpoint_sub",
+            "__overwrite_me_with_common": "overwrite_by_common",
+            "__overwrite_me_with_common_sub": "overwrite_by_common_sub_second",
+            "__overwrite_me_with_endpoint": null,
+            "__overwrite_me_with_endpoint_sub": "overwrite_by_endpoint_sub",
+            "__merge_me": [
+                "defined_at_common_sub",
+                "defined_at_common"
+            ],
+            "__replace_me": [
+                "defined_at_common_sub"
+            ],
+            "__remove_me": [
+                "defined_at_common_sub"
+            ],
+            "__defined_at_common_all": true,
+            "$subscenarios": [
+                "for_common_all",
+                "for_common_merge",
+                "for_common_overwrite_first",
+                "for_common_overwrite_second",
+                "for_common_tablet",
+                "for_endpoint_overwrite"
+            ],
+            "__defined_at_common_sub_viewport": "tablet",
+            "userAgent": "",
+            "__defined_at_common_viewport": "tablet"
+        },
+        {
+            "label": "/merge:scenario_e:phone",
+            "url": "https://coremind-jp.github.io/merge",
+            "referenceUrl": "https://coremind-jp.github.io/merge",
+            "viewports": [
+                {
+                    "label": "phone",
+                    "width": 1024,
+                    "height": 768
+                }
+            ],
+            "__defined_at_common_sub_all": "all",
+            "__delete_me": "some value",
+            "__overwrite_me": "overwrite_by_common",
+            "__overwrite_me_with_common": "overwrite_by_common",
+            "__overwrite_me_with_common_sub": "overwrite_by_common_sub_second",
+            "__overwrite_me_with_endpoint": null,
+            "__overwrite_me_with_endpoint_sub": null,
+            "__merge_me": [
+                "defined_at_common_sub",
+                "defined_at_common",
+                "defined_at_endpoint_sub",
+                "defined_at_endpoint",
+                "defined_at_endpoint_with_alias"
+            ],
+            "__replace_me": [
+                "replaced_by_endpoint"
+            ],
+            "__remove_me": [],
+            "__defined_at_common_all": true,
+            "$subscenarios": [
+                "for_common_all",
+                "for_common_merge",
+                "for_common_overwrite_first",
+                "for_common_overwrite_second",
+                "for_common_phone",
+                "for_endpoint_merge"
+            ],
+            "__defined_at_common_sub_viewport": "phone",
+            "userAgent": "",
+            "__defined_at_common_viewport": "phone",
+            "__merge_order_remove_before": [
+                "a",
+                "b",
+                "c",
+                "d"
+            ],
+            "__merge_order_remove_after": [
+                "a",
+                "b",
+                "c",
+                "d"
+            ],
+            "__merge_order_set_the_highest_priority": [
+                "a",
+                "b",
+                "c",
+                "d"
+            ]
+        },
+        {
+            "label": "/merge:scenario_e:tablet",
+            "url": "https://coremind-jp.github.io/merge",
+            "referenceUrl": "https://coremind-jp.github.io/merge",
+            "viewports": [
+                {
+                    "label": "tablet",
+                    "width": 1024,
+                    "height": 768
+                }
+            ],
+            "__defined_at_common_sub_all": "all",
+            "__delete_me": "some value",
+            "__overwrite_me": "overwrite_by_common",
+            "__overwrite_me_with_common": "overwrite_by_common",
+            "__overwrite_me_with_common_sub": "overwrite_by_common_sub_second",
+            "__overwrite_me_with_endpoint": null,
+            "__overwrite_me_with_endpoint_sub": null,
+            "__merge_me": [
+                "defined_at_common_sub",
+                "defined_at_common",
+                "defined_at_endpoint_sub",
+                "defined_at_endpoint",
+                "defined_at_endpoint_with_alias"
+            ],
+            "__replace_me": [
+                "replaced_by_endpoint"
+            ],
+            "__remove_me": [],
+            "__defined_at_common_all": true,
+            "$subscenarios": [
+                "for_common_all",
+                "for_common_merge",
+                "for_common_overwrite_first",
+                "for_common_overwrite_second",
+                "for_common_tablet",
+                "for_endpoint_merge"
+            ],
+            "__defined_at_common_sub_viewport": "tablet",
+            "userAgent": "",
+            "__defined_at_common_viewport": "tablet",
+            "__merge_order_remove_before": [
+                "a",
+                "b",
+                "c",
+                "d"
+            ],
+            "__merge_order_remove_after": [
+                "a",
+                "b",
+                "c",
+                "d"
+            ],
+            "__merge_order_set_the_highest_priority": [
+                "a",
+                "b",
+                "c",
+                "d"
+            ]
+        },
+        {
+            "label": "/merge:scenario_h:phone",
+            "url": "https://coremind-jp.github.io/merge",
+            "referenceUrl": "https://coremind-jp.github.io/merge",
+            "viewports": [
+                {
+                    "label": "phone",
+                    "width": 1024,
+                    "height": 768
+                }
+            ],
+            "__defined_at_common_sub_all": "all",
+            "__delete_me": "some value",
+            "__overwrite_me": "overwrite_by_common",
+            "__overwrite_me_with_common": "overwrite_by_common",
+            "__overwrite_me_with_common_sub": "overwrite_by_common_sub_second",
+            "__overwrite_me_with_endpoint": null,
+            "__overwrite_me_with_endpoint_sub": null,
+            "__merge_me": [
+                "defined_at_common_sub",
+                "defined_at_common",
+                "defined_at_endpoint_sub"
+            ],
+            "__replace_me": [
+                "defined_at_common_sub"
+            ],
+            "__remove_me": [
+                "defined_at_common_sub"
+            ],
+            "__defined_at_common_all": true,
+            "$subscenarios": [
+                "for_common_all",
+                "for_common_merge",
+                "for_common_overwrite_first",
+                "for_common_overwrite_second",
+                "for_common_phone",
+                "for_endpoint_merge"
+            ],
+            "__defined_at_common_sub_viewport": "phone",
+            "userAgent": "",
+            "__defined_at_common_viewport": "phone",
+            "__merge_order_remove_before": [
+                "a",
+                "b",
+                "c",
+                "d",
+                "aa",
+                "bb",
+                "cc",
+                "dd"
+            ],
+            "__merge_order_remove_after": [
+                "a",
+                "b",
+                "c",
+                "d",
+                "aa",
+                "bb",
+                "cc",
+                "dd"
+            ],
+            "__merge_order_set_the_highest_priority": [
+                "set",
+                "prefix",
+                "the",
+                "highest",
+                "priority"
+            ]
+        },
+        {
+            "label": "/merge:scenario_h:tablet",
+            "url": "https://coremind-jp.github.io/merge",
+            "referenceUrl": "https://coremind-jp.github.io/merge",
+            "viewports": [
+                {
+                    "label": "tablet",
+                    "width": 1024,
+                    "height": 768
+                }
+            ],
+            "__defined_at_common_sub_all": "all",
+            "__delete_me": "some value",
+            "__overwrite_me": "overwrite_by_common",
+            "__overwrite_me_with_common": "overwrite_by_common",
+            "__overwrite_me_with_common_sub": "overwrite_by_common_sub_second",
+            "__overwrite_me_with_endpoint": null,
+            "__overwrite_me_with_endpoint_sub": null,
+            "__merge_me": [
+                "defined_at_common_sub",
+                "defined_at_common",
+                "defined_at_endpoint_sub"
+            ],
+            "__replace_me": [
+                "defined_at_common_sub"
+            ],
+            "__remove_me": [
+                "defined_at_common_sub"
+            ],
+            "__defined_at_common_all": true,
+            "$subscenarios": [
+                "for_common_all",
+                "for_common_merge",
+                "for_common_overwrite_first",
+                "for_common_overwrite_second",
+                "for_common_tablet",
+                "for_endpoint_merge"
+            ],
+            "__defined_at_common_sub_viewport": "tablet",
+            "userAgent": "",
+            "__defined_at_common_viewport": "tablet",
+            "__merge_order_remove_before": [
+                "a",
+                "b",
+                "c",
+                "d",
+                "aa",
+                "bb",
+                "cc",
+                "dd"
+            ],
+            "__merge_order_remove_after": [
+                "a",
+                "b",
+                "c",
+                "d",
+                "aa",
+                "bb",
+                "cc",
+                "dd"
+            ],
+            "__merge_order_set_the_highest_priority": [
+                "set",
+                "prefix",
+                "the",
+                "highest",
+                "priority"
+            ]
+        },
+        {
+            "label": "/script:scenario_f:phone",
+            "url": "https://coremind-jp.github.io/script",
+            "referenceUrl": "https://coremind-jp.github.io/script",
+            "viewports": [
+                {
+                    "label": "phone",
+                    "width": 1024,
+                    "height": 768
+                }
+            ],
+            "__defined_at_common_sub_all": "all",
+            "__delete_me": "some value",
+            "__overwrite_me": "overwrite_by_common",
+            "__overwrite_me_with_common": "overwrite_by_common",
+            "__overwrite_me_with_common_sub": "overwrite_by_common_sub_second",
+            "__overwrite_me_with_endpoint": null,
+            "__overwrite_me_with_endpoint_sub": null,
+            "__merge_me": [
+                "defined_at_common_sub",
+                "defined_at_common"
+            ],
+            "__replace_me": [
+                "defined_at_common_sub"
+            ],
+            "__remove_me": [
+                "defined_at_common_sub"
+            ],
+            "__defined_at_common_all": true,
+            "$subscenarios": [
+                "for_common_all",
+                "for_common_merge",
+                "for_common_overwrite_first",
+                "for_common_overwrite_second",
+                "for_common_phone",
+                "for_endpoint_script"
+            ],
+            "__defined_at_common_sub_viewport": "phone",
+            "userAgent": "",
+            "__defined_at_common_viewport": "phone",
+            "$scripts": [
+                "before:subscenarioScriptBefore",
+                "ready:subscenarioScriptReady",
+                "before:scriptA"
+            ]
+        },
+        {
+            "label": "/script:scenario_f:tablet",
+            "url": "https://coremind-jp.github.io/script",
+            "referenceUrl": "https://coremind-jp.github.io/script",
+            "viewports": [
+                {
+                    "label": "tablet",
+                    "width": 1024,
+                    "height": 768
+                }
+            ],
+            "__defined_at_common_sub_all": "all",
+            "__delete_me": "some value",
+            "__overwrite_me": "overwrite_by_common",
+            "__overwrite_me_with_common": "overwrite_by_common",
+            "__overwrite_me_with_common_sub": "overwrite_by_common_sub_second",
+            "__overwrite_me_with_endpoint": null,
+            "__overwrite_me_with_endpoint_sub": null,
+            "__merge_me": [
+                "defined_at_common_sub",
+                "defined_at_common"
+            ],
+            "__replace_me": [
+                "defined_at_common_sub"
+            ],
+            "__remove_me": [
+                "defined_at_common_sub"
+            ],
+            "__defined_at_common_all": true,
+            "$subscenarios": [
+                "for_common_all",
+                "for_common_merge",
+                "for_common_overwrite_first",
+                "for_common_overwrite_second",
+                "for_common_tablet",
+                "for_endpoint_script"
+            ],
+            "__defined_at_common_sub_viewport": "tablet",
+            "userAgent": "",
+            "__defined_at_common_viewport": "tablet",
+            "$scripts": [
+                "before:subscenarioScriptBefore",
+                "ready:subscenarioScriptReady",
+                "before:scriptA"
+            ]
+        },
+        {
+            "label": "/script:scenario_g:phone",
+            "url": "https://coremind-jp.github.io/script",
+            "referenceUrl": "https://coremind-jp.github.io/script",
+            "viewports": [
+                {
+                    "label": "phone",
+                    "width": 1024,
+                    "height": 768
+                }
+            ],
+            "__defined_at_common_sub_all": "all",
+            "__delete_me": "some value",
+            "__overwrite_me": "overwrite_by_common",
+            "__overwrite_me_with_common": "overwrite_by_common",
+            "__overwrite_me_with_common_sub": "overwrite_by_common_sub_second",
+            "__overwrite_me_with_endpoint": null,
+            "__overwrite_me_with_endpoint_sub": null,
+            "__merge_me": [
+                "defined_at_common_sub",
+                "defined_at_common"
+            ],
+            "__replace_me": [
+                "defined_at_common_sub"
+            ],
+            "__remove_me": [
+                "defined_at_common_sub"
+            ],
+            "__defined_at_common_all": true,
+            "$subscenarios": [
+                "for_common_all",
+                "for_common_merge",
+                "for_common_overwrite_first",
+                "for_common_overwrite_second",
+                "for_common_phone",
+                "for_endpoint_script"
+            ],
+            "__defined_at_common_sub_viewport": "phone",
+            "userAgent": "",
+            "__defined_at_common_viewport": "phone",
+            "$scripts": [
+                "before:subscenarioScriptBefore",
+                "ready:subscenarioScriptReady",
+                "ready:scriptB"
+            ]
+        },
+        {
+            "label": "/script:scenario_g:tablet",
+            "url": "https://coremind-jp.github.io/script",
+            "referenceUrl": "https://coremind-jp.github.io/script",
+            "viewports": [
+                {
+                    "label": "tablet",
+                    "width": 1024,
+                    "height": 768
+                }
+            ],
+            "__defined_at_common_sub_all": "all",
+            "__delete_me": "some value",
+            "__overwrite_me": "overwrite_by_common",
+            "__overwrite_me_with_common": "overwrite_by_common",
+            "__overwrite_me_with_common_sub": "overwrite_by_common_sub_second",
+            "__overwrite_me_with_endpoint": null,
+            "__overwrite_me_with_endpoint_sub": null,
+            "__merge_me": [
+                "defined_at_common_sub",
+                "defined_at_common"
+            ],
+            "__replace_me": [
+                "defined_at_common_sub"
+            ],
+            "__remove_me": [
+                "defined_at_common_sub"
+            ],
+            "__defined_at_common_all": true,
+            "$subscenarios": [
+                "for_common_all",
+                "for_common_merge",
+                "for_common_overwrite_first",
+                "for_common_overwrite_second",
+                "for_common_tablet",
+                "for_endpoint_script"
+            ],
+            "__defined_at_common_sub_viewport": "tablet",
+            "userAgent": "",
+            "__defined_at_common_viewport": "tablet",
+            "$scripts": [
+                "before:subscenarioScriptBefore",
+                "ready:subscenarioScriptReady",
+                "ready:scriptB"
+            ]
+        }
+    ],
+    "paths": {
+        "bitmaps_reference": "backstop_data/bitmaps_reference",
+        "bitmaps_test": "backstop_data/bitmaps_test",
+        "engine_scripts": "backstop_data/engine_scripts",
+        "html_report": "backstop_data/html_report",
+        "ci_report": "backstop_data/ci_report"
+    },
+    "report": [
+        "browser"
+    ],
+    "engine": "puppeteer",
+    "engineOptions": {
+        "args": [
+            "--no-sandbox"
+        ]
+    },
+    "asyncCaptureLimit": 5,
+    "asyncCompareLimit": 50,
+    "debug": false,
+    "debugWindow": false
+}

@@ -1,7 +1,7 @@
 /**
  * Config file name for boilerplate.
  */
-const CONF_FILE_NAME = "boilerplate.json";
+const BOILERPLATE_CONFIG = "boilerplate.json";
 
 
 /**
@@ -26,6 +26,12 @@ const ENDPOINT_SCENARIO = "endpoint.json";
  * Template file name for engine scripts
  */
 const ENGINE_SCRIPT = "engine_scripts.js";
+
+
+/**
+ * Template file name for integraation example.
+ */
+const INTEGRATION_EXAMPLE = "integration_example.js";
 
 
 /**
@@ -56,11 +62,12 @@ const INMDENT_JSON = 4;
 
 
 module.exports = {
-  CONF_FILE_NAME,
+  BOILERPLATE_CONFIG,
   PUPPETEER_HOOK,
   ENDPOINT_SCENARIO,
   COMMON_SCENARIO,
   ENGINE_SCRIPT,
+  INTEGRATION_EXAMPLE,
   COMMON_DIR,
   INC_CODE,
   INC_JSON,

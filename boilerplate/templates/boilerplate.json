@@ -1,9 +1,9 @@
 {
   "templateType": "min",
-  "test": "https://coremind-jp.github.io/",
-  "reference": "https://coremind-jp.github.io/",
+  "test": "https://github.com/",
+  "reference": "https://github.com/",
   "endpoints": {
-    "/backstopjs_boilerplate": [
+    "/coremind-jp/backstopjs_boilerplate": [
       "default"
     ]
   },
