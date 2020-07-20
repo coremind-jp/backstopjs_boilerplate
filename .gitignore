@@ -1,5 +1,4 @@
 node_modules
 
-sandbox/backstop_data/
+sandbox/backstop_data
 sandbox/backstop.json
-!sandbox/backstop_data/boilerplate
