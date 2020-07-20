@@ -57,6 +57,7 @@ __テスト実行__
 `npm run reference` and  `npm run test`
 
 __javascript による backstopjs との統合__
+
 backstopjs と boilerplate の連携を javascript で行いたい場合は、`init`コマンドで生成される _integration_example.js_ を参考にしてもらえれば良い。
 ```js
 const backstop = require("backstopjs");
@@ -176,17 +177,19 @@ backstopjs 自体が提供するヘッドレスブラウザに対する操作は
 コマンドの実行によって生成されるシナリオの初期内容を変更する為の値。[ソース](https://github.com/coremind-jp/backstopjs_boilerplate/blob/master/boilerplate/templates/endpoint.json)から使用可能なタイプとその内容を確認する。
 
 ###### <span id="toc1-1-1-3">test と reference</span>
-backstopjs における同パラメータと同義。boilerplate では test または reference に対して同一ドメイン内のエンドポイントに焦点を充てている為、シナリオ毎に異なるドメインを有するシナリオは生成できない。
+backstopjs における同パラメータと同義。シナリオ毎に異なるドメインを有するシナリオは生成する際は個々のシナリオで _url_ を書き換える。
 
 ###### endpoints
 key にはスクリーンショットを実行する対象パスを、value にはその対象パスに対するシナリオを配列で記述する。
 
-同一ページに対して backstopjs が提供する機能(selectors) では対応できないマルチスクリーンショットを実行したい場合に個別にシナリオ定義を追記して実現する。またページ内リンクやネストしたパスを持つエンドポイント（例では _/some_endpoint/some_nested_endpoint_ や _/some_endpoint/#some_link_）はその全部を一つのエンドポイントとして扱う。_index_ は特殊な値で `/` に対する定義と解釈される。
+_index_ は特殊な値で `/` に対する定義と解釈される。
+
+同一ページに対して backstopjs が提供する機能(selectors) では対応できないマルチスクリーンショットを実行したい場合に個別にシナリオ定義を追記して実現する。またページ内リンクやネストしたパスを持つエンドポイント（例では _/some_endpoint/some_nested_endpoint_ や _/some_endpoint/#some_link_）はその全部を一つのエンドポイントとして扱う。
 
 空配列（例では _/endpoint_have_not_scenario_）として定義すると`test` コマンドや `reference` コマンドで出力されるシナリオにのみ含まれ、テンプレートファイル自体は生成されない。
 
 ###### skip
-_when_ には `test` または `reference` を指定する。指定された方でシナリオの生成が行われた場合 _skip_ 内の _endpoints_ 以下とマッチするシナリオを除外する。boilerplate における `test`, `reference` の処理の違いはこの点のみなっている。この機能はシナリオを作成している最中に _test_ または _reference_ どちらかについて特定のシナリオを実行したくない場合に設定として制御できると重宝すると思ったので実装した。
+_when_ には `test` または `reference` を指定する。指定された方でシナリオの生成が行われた場合 _skip_ 内の _endpoints_ 以下とマッチするシナリオを除外する。boilerplate における `test`, `reference` の処理の違いはこの点のみなっている。この機能はシナリオを作成している最中に _test_ または _reference_ どちらかについて特定のシナリオを実行したくない場合に設定として制御できると重宝すると思ったので実装した。backstopjs の _filter_ がホワイトリストなのに対して、このパラメータはブラックリストの役割をはたしている。
 
 #### <span id="toc1-2">1-2. テンプレートの生成</span>
 `sync` コマンドを実行するとその時点の _boilerplate.json_ の内容に従って _backstop_data/_ にシナリオとディレクトリとファイルを生成する。

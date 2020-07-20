@@ -41,6 +41,12 @@ const COMMON_DIR = "_common";
 
 
 /**
+ * scenario name for empty array endpoint.
+ */
+const UNDEFINED_SCENARIO = "Undef scenario created by boilerplate";
+
+
+/**
  * Scenario key
  * that execute scripts when process in onBefore or onReady.
  */

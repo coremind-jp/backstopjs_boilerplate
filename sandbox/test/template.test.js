@@ -10,9 +10,6 @@ const boilerplate = require(r.boilerplate);
 
 describe("Exists files and directories.", () => {
 
-  beforeEach(async () => {
-  });
-
   describe("When after 'init'", () => {
     [
       r.cwdBoilerplate(),

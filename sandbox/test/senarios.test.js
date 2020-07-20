@@ -1,6 +1,7 @@
 const _ = require("lodash");
 
 const { createScenarios } = require("backstopjs_boilerplate/boilerplate/scenario");
+const { UNDEFINED_SCENARIO } = require("backstopjs_boilerplate/boilerplate/vars");
 const Resolver = require("backstopjs_boilerplate/boilerplate//resolver");
 
 const r = new Resolver("backstop.json");
@@ -80,7 +81,7 @@ describe("ScenarioTest", () => {
       def.viewports.forEach(viewport => {
         expect(scenarios.filter(scenario => scenario.label.match(new RegExp(viewport.label)))).toEqual(
           expect.arrayContaining([
-            expect.objectContaining({ label: `/not_exists_scenario_file:default:${viewport.label}` })
+            expect.objectContaining({ label: `/not_exists_scenario_file:${UNDEFINED_SCENARIO}:${viewport.label}` })
           ]));
       });
     });
