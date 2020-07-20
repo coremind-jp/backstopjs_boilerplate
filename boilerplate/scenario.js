@@ -9,26 +9,17 @@ const { sanitizeEndpoint } = require("./utils");
  * defined scenarios as 'skip' in configfile
  * will be skip when specific command execute.
  * @param {Resolver} r Resolver instance
- * @param {string} when 
+ * @param {string} when execute command
  */
 function createScenarios(r, when) {
 
   const backstop = require(r.backstop);
   const boilerplate = require(r.boilerplate);
 
-  if (boilerplate.skip && boilerplate.skip.when === when)
-    for (const endpoint in boilerplate.skip.endpoints)
-      boilerplate.endpoints[endpoint] = _.differenceWith(
-        boilerplate.endpoints[endpoint],
-        boilerplate.skip.endpoints[endpoint],
-        _.isEqual
-      );
+  _applySkipFilter(boilerplate, when);
 
-  // Push dummy scenario if not exists scenarios in endpoint. 
-  for (const endpoint in boilerplate.endpoints)
-    if (boilerplate.endpoints[endpoint].length === 0)
-      boilerplate.endpoints[endpoint].push(UNDEFINED_SCENARIO);
-  
+  _pushAlias(boilerplate);
+
   let result = [];
   for (const endpoint in boilerplate.endpoints)
     for (const scenarioName of boilerplate.endpoints[endpoint])
@@ -42,9 +33,50 @@ function createScenarios(r, when) {
 
 
 /**
+ * Apply skip filter to scenarios.
+ * @param {object} boilerplate config for boilerplate
+ */
+function _applySkipFilter(boilerplate, when) {
+
+  if (!boilerplate.skip
+  ||  !boilerplate.skip.when
+  ||   boilerplate.skip.when !== when
+  ||  !boilerplate.skip.endpoints)
+    return;
+
+  for (const endpoint in boilerplate.skip.endpoints) {
+
+    boilerplate.skip.endpoints[endpoint].length === 0
+      ? delete boilerplate.endpoints[endpoint]
+
+      : boilerplate.endpoints[endpoint] = _.differenceWith(
+        boilerplate.endpoints[endpoint],
+        boilerplate.skip.endpoints[endpoint],
+        _.isEqual
+      );
+  }
+}
+
+
+/**
+ * Push alias as default scenarioa for empty array endpoints.
+ * @param {*} r 
+ * @param {*} sId 
+ * @param {*} boilerplate 
+ */
+function _pushAlias(boilerplate) {
+
+  for (const endpoint in boilerplate.endpoints)
+    if (boilerplate.endpoints[endpoint].length === 0)
+      boilerplate.endpoints[endpoint].push(UNDEFINED_SCENARIO);
+}
+
+
+/**
  * Create a scenario.
  * @param {Resolver} r Resolver instance
  * @param {ScenarioID} sId ScenarioID instance
+ * @param {object} boilerplate config for boilerplate
  */
 function _createScenario(r, sId, boilerplate) {
 

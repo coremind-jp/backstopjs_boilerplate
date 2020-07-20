@@ -85,8 +85,34 @@ describe("ScenarioTest", () => {
           ]));
       });
     });
+
   });
 
+  describe("Skip Scenario creation.", () => {
+
+    test("The boilerplate.json will skip creation a scenario if same scenario in skip block endpoints.'", async () => {
+
+      def.viewports.forEach(viewport => {
+        expect(scenarios.filter(scenario => scenario.label.match(new RegExp(viewport.label)))).toEqual(
+          expect.arrayContaining([
+            expect.not.objectContaining({ label: `/skip_scenario:skip_a:${viewport.label}` })
+          ]));
+      });
+    });
+
+    test("The boilerplate.json will skip creation all scenarios in a endpoint if not exists scenarios in skip block endpoint", async () => {
+
+      def.viewports.forEach(viewport => {
+        expect(scenarios.filter(scenario => scenario.label.match(new RegExp(viewport.label)))).toEqual(
+          expect.arrayContaining([
+            expect.not.objectContaining({ label: `/skip_exists_scenario_files:skip_scenario_b:${viewport.label}` }),
+            expect.not.objectContaining({ label: `/skip_exists_scenario_files:skip_scenario_d:${viewport.label}` }),
+            expect.not.objectContaining({ label: `/skip_exists_scenario_files:skip_scenario_c:${viewport.label}` }),
+            expect.not.objectContaining({ label: `/skip_not_exists_scenario_file:${UNDEFINED_SCENARIO}:${viewport.label}` })
+          ]));
+      });
+    });
+  });
 
   describe("Include Subscenarios", () => {
 

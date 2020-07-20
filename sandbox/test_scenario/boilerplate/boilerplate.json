@@ -19,11 +19,25 @@
       "scenario_f",
       "scenario_g"
     ],
-    "/not_exists_scenario_file": []
+    "/not_exists_scenario_file": [],
+    "/skip_scenario": [
+      "skip_a"
+    ],
+    "/skip_exists_scenario_files": [
+      "skip_b",
+      "skip_c",
+      "skip_d"
+    ],
+    "/skip_not_exists_scenario_file": []
   },
   "skip": {
-    "when": "reference",
+    "when": "test",
     "endpoints": {
+      "/skip": [
+        "skip_a"
+      ],
+      "/skip_exists_scenario_files": [],
+      "/skip_not_exists_scenario_file": []
     }
   }
 }
