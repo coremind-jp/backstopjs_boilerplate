@@ -16,9 +16,9 @@ function createScenarios(r, when) {
   const backstop = require(r.backstop);
   const boilerplate = require(r.boilerplate);
 
-  _applySkipFilter(boilerplate, when);
-
   _pushAlias(boilerplate);
+
+  _applySkipFilter(boilerplate, when);
 
   let result = [];
   for (const endpoint in boilerplate.endpoints)
