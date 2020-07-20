@@ -1,6 +1,6 @@
 const _ = require("lodash");
 
-const { INC_JSON, COMMON_DIR, COMMON_SCENARIO } = require("./vars");
+const { INC_JSON, COMMON_DIR, COMMON_SCENARIO, UNDEFINED_SCENARIO } = require("./vars");
 const { sanitizeEndpoint } = require("./utils");
 
 
@@ -27,7 +27,7 @@ function createScenarios(r, when) {
   // Push dummy scenario if not exists scenarios in endpoint. 
   for (const endpoint in boilerplate.endpoints)
     if (boilerplate.endpoints[endpoint].length === 0)
-      boilerplate.endpoints[endpoint].push("default");
+      boilerplate.endpoints[endpoint].push(UNDEFINED_SCENARIO);
   
   let result = [];
   for (const endpoint in boilerplate.endpoints)
@@ -50,7 +50,7 @@ function _createScenario(r, sId, boilerplate) {
 
   const commonScenario = require(r.cwdBoilerplate(COMMON_DIR, COMMON_SCENARIO));
 
-  const endpointScenario = sId.scenarioName === "default"
+  const endpointScenario = sId.scenarioName === UNDEFINED_SCENARIO
     ? {}
     : require(r.cwdBoilerplate(sId.sanitizedEndpoint, `${sId.scenarioName}.json`));
 

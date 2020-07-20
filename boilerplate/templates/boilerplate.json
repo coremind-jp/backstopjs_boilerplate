@@ -3,9 +3,7 @@
   "test": "https://github.com/",
   "reference": "https://github.com/",
   "endpoints": {
-    "/coremind-jp/backstopjs_boilerplate": [
-      "default"
-    ]
+    "/coremind-jp/backstopjs_boilerplate": []
   },
   "skip": {
     "when": "reference",
