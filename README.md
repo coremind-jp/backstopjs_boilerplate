@@ -10,7 +10,6 @@
     - [1-1. 設定ファイルを作成する](#toc1-1)
       - [設定ファイル定義](#toc1-1-1)
         - [templateType](#templateType)
-        - [viewports](#viewports)
         - [test と reference](#toc1-1-1-3)
         - [endpoints](#endpoints)
         - [skip](#skip)
