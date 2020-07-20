@@ -13,6 +13,7 @@
         - [viewports](#viewports)
         - [test と reference](#toc1-1-1-3)
         - [endpoints](#endpoints)
+        - [skip](#skip)
     - [1-2. テンプレートの生成](#toc1-2)
   - [2. 同一シナリオファイル内でビューポート毎の記述を可能にする](#toc2)
   - [3. 再利用可能なシナリオ](#toc3)
