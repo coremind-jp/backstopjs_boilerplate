@@ -5,6 +5,11 @@ const { unlink, createFile } = require("./boilerplate/utils");
 const { INMDENT_JSON } = require("./boilerplate/vars");
 
 
+/**
+ * @see https://github.com/coremind-jp/backstopjs_boilerplate
+ * @param {string} command init | sync | test | reference
+ * @param {string} path path to backstop.json
+ */
 async function boilerplate(command, path) {
 
   const resolver = new Resolver(path);
