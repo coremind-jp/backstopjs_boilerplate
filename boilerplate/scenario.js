@@ -1,3 +1,4 @@
+const URL = require("url").URL;
 const _ = require("lodash");
 
 const { sanitizeEndpoint } = require("./utils");

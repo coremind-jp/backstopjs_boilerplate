@@ -6,7 +6,7 @@ catch(e) { throw new Error("you must be install backstopjs.") }
 
 const boilerplate = require("backstopjs_boilerplate");
 const cmd = process.argv[2];
-const cnf = process.argv[3] || `${process.cwd()}\\backstop.json`;
+const cnf = process.argv[3] || require("path").join(process.cwd(), "backstop.json");
 
 switch (cmd) {
   case "init":

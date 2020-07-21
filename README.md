@@ -1,3 +1,5 @@
+![Node.js CI](https://github.com/coremind-jp/backstopjs_boilerplate/workflows/Node.js%20CI/badge.svg?branch=master)
+
 # Boilerplate for backstopjs
 
 ## 目次
@@ -64,7 +66,7 @@ const backstop = require("backstopjs");
 const boilerplate = require("backstopjs_boilerplate");
 
 const cmd = process.argv[2];
-const cnf = process.argv[3] || `${process.cwd()}\\backstop.json`;
+const cnf = process.argv[3] || require("path").join(process.cwd(), "backstop.json");
 
 switch (cmd) {
   case "init":
