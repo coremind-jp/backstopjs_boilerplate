@@ -407,7 +407,7 @@ module.exports = preimplements => ({
   },
 
   // 指定秒数待機する
-  wait: async function(page, scenario, vp, isReference, engine, config, delay) {
+  wait: async function(page, scenario, vp, isReference, engine, config, ms) {
     await page.waitFor(ms);
   },
 });
