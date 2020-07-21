@@ -34,24 +34,20 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-      run: npm ci
 
-    - name: npm ci for sandbox
-      run: npm ci
+    - run: npm ci
+
+    - run: npm ci
       working-directory: ./sandbox
 
-    - name: enable link
-      run: npm run enable-link --if-present
+    - run: npm run enable-link --if-present
       working-directory: ./sandbox
 
-    - name: test chain
-      run: npm run chain --if-present
+    - run: npm run chain --if-present
       working-directory: ./sandbox
       
-    - name: test chain-integration
-      run: npm run chain-integration --if-present
+    - run: npm run chain-integration --if-present
       working-directory: ./sandbox
 
-    - name: execute jest
-      run: npm test
+    - run: npm test
       working-directory: ./sandbox
