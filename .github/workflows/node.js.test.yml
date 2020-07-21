@@ -34,7 +34,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: cd sandbox/
+    - run: cd ./sandbox/
     - run: npm ci
     - run: npm run enable-link --if-present
     - run: npm run chain --if-present
