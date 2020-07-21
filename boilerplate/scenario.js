@@ -1,3 +1,4 @@
+const URL = require("url").URL;
 const _ = require("lodash");
 
 const { INC_JSON, COMMON_DIR, COMMON_SCENARIO, UNDEFINED_SCENARIO } = require("./vars");
