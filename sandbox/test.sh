@@ -12,7 +12,7 @@ backstop init;
 
 bsbl init;
 
-cp -rf $(cd $(dirname $0); pwd)/test_scenario/boilerplate/ $(cd $(dirname $0); pwd)/backstop_data/
+cp -rf $(cd $(dirname $0); pwd)/test_scenario/boilerplate $(cd $(dirname $0); pwd)/backstop_data
 
 bsbl sync;
 
