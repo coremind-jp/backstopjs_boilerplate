@@ -12,12 +12,6 @@ on:
       - '**.js'
       - '**.sh'
 
-  pull_request:
-    branches: [ master ]
-    paths:
-      - '**.js'
-      - '**.sh'
-
 jobs:
   test:
     runs-on: ${{ matrix.os }}
