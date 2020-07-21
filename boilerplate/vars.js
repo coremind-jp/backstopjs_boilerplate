@@ -61,6 +61,30 @@ const INC_JSON = "$subscenarios";
 
 
 /**
+ * Scenario key prefix. (merge and unique)
+ */
+const MERGE_PREFIX_PLUSE = "+:";
+
+
+/**
+ * Scenario key prefix. (matched remove)
+ */
+const MERGE_PREFIX_MINUS = "-:";
+
+
+/**
+ * Scenario key prefix. (assign)
+ */
+const MERGE_PREFIX_EQUAL = "=:";
+
+
+/**
+ * Scenario key prefix regexp.
+ */
+const MERGE_PREFIX_REGEXP = "^[+\-\=]:";
+
+
+/**
  * Made json files by boilerplate that number of indent.
  */
 const INMDENT_JSON = 4;
@@ -75,7 +99,12 @@ module.exports = {
   ENGINE_SCRIPT,
   INTEGRATION_EXAMPLE,
   COMMON_DIR,
+  UNDEFINED_SCENARIO,
   INC_CODE,
   INC_JSON,
   INMDENT_JSON,
+  MERGE_PREFIX_PLUSE,
+  MERGE_PREFIX_MINUS,
+  MERGE_PREFIX_EQUAL,
+  MERGE_PREFIX_REGEXP
 };

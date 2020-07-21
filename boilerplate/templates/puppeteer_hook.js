@@ -21,10 +21,10 @@ const preimplementScripts = {
 /**
  * Use in onBefore fook and onReady fook.
  * dynamically call engine scripts belong "$scripts" property in a scenario file.
- * @param {*} ifLabel 
- * @param {*} logLabel 
+ * @param {string} prefix before or ready 
+ * @param {string} logLabel use console.log
  */
-function createScriptLoader(ifLabel, logLabel) {
+function createScriptLoader(prefix, logLabel) {
   return async (...backstopArgments) => {
     const scenario = backstopArgments[1];
 
@@ -33,17 +33,17 @@ function createScriptLoader(ifLabel, logLabel) {
 
     const scripts = getUserScripts(preimplementScripts);
 
-    // console.log(`${scenario.label} |  Execute engine scripts in '${logLabel}'`);
+    console.log(`${scenario.label} |  Execute engine scripts in '${logLabel}'`);
     for (let value of scenario[INC_CODE]) {
       const values = value.split(":");
 
-      if (values.shift() !== ifLabel)
+      if (values.shift() !== prefix)
         continue;
 
       const method = values.shift();
       const args = values.map(arg => arg.match(/^[0-9]+$/) ? parseInt(arg): arg);
 
-      // console.log(`${scenario.label} |  ${method} ...`);
+      console.log(`${scenario.label} |  ${method} ...`);
       await scripts[method](...backstopArgments, ...args);
     };
   };
