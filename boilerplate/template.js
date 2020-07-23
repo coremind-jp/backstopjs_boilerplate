@@ -4,7 +4,8 @@ const rimraf = require("rimraf");
 const R = require("./resolver");
 
 const {
-  COMMON_SCENARIO, ENDPOINT_SCENARIO, ENGINE_SCRIPT, INTEGRATION_EXAMPLE,
+  ENGINE_SCRIPT, INTEGRATION_EXAMPLE,
+  TEMPLATE_COMMON, TEMPLATE_ENDPOINT, TEMPLATE_SUBSCENARIO,
   BOILERPLATE_CONFIG, PUPPETEER_HOOK, INMDENT_JSON, COMMON_DIR, INC_JSON
 } = require("./vars");
 
@@ -21,13 +22,15 @@ async function initialize() {
 
   const backstop = require(R.backstop);
 
-  await mkdir(R.cwdBoilerplate());
-
   copyFile(R.template(INTEGRATION_EXAMPLE), R.joinCwd(INTEGRATION_EXAMPLE));
+
+  await mkdir(R.cwdBoilerplate());  
   copyFile(R.template(BOILERPLATE_CONFIG), R.cwdBoilerplate(BOILERPLATE_CONFIG));
   copyFile(R.template(ENGINE_SCRIPT),  R.cwdBoilerplate(`${backstop.engine}_scripts.js`));
-  copyFile(R.template(PUPPETEER_HOOK), R.cwdPuppetScript(PUPPETEER_HOOK));
+  copyFile(R.template(TEMPLATE_ENDPOINT), R.cwdBoilerplate(TEMPLATE_ENDPOINT));
+  copyFile(R.template(TEMPLATE_SUBSCENARIO), R.cwdBoilerplate(TEMPLATE_SUBSCENARIO));
 
+  copyFile(R.template(PUPPETEER_HOOK), R.cwdPuppetScript(PUPPETEER_HOOK));
   _replaceHook("before", "onBefore");
   _replaceHook("ready", "onReady");
 };
@@ -94,7 +97,7 @@ function _fetchScenarioPaths(backstop, boilerplate) {
   const wrapper = (dir, file) =>
     _fetchSubscenarioPaths(result, dir, file, backstop.viewports);
   
-  wrapper(COMMON_DIR, COMMON_SCENARIO);
+  wrapper(COMMON_DIR, TEMPLATE_COMMON);
 
   for (const endpoint in boilerplate.endpoints)
     if (0 < boilerplate.endpoints[endpoint].length)
@@ -132,12 +135,12 @@ function _fetchSubscenarioPaths(result, endpoint, scenarioName, viewports) {
 
 async function _createCommonScenario(backstop) {
 
-  const template = require(R.template(COMMON_SCENARIO));
+  const template = require(R.template(TEMPLATE_COMMON));
 
   await mkdir(R.cwdBoilerplate(COMMON_DIR));
 
   await createFile(
-    R.cwdBoilerplate(COMMON_DIR, COMMON_SCENARIO),
+    R.cwdBoilerplate(COMMON_DIR, TEMPLATE_COMMON),
     JSON.stringify(
       backstop.viewports.reduce((json, viewport) => {
         json[viewport.label] = { userAgent: "" };
@@ -152,7 +155,7 @@ async function _createCommonScenario(backstop) {
 
 async function _createEndpointScenario(backstop,  boilerplate) {
 
-  const template = require(R.template(ENDPOINT_SCENARIO))[boilerplate.templateType] || {};
+  const template = require(R.cwdBoilerplate(TEMPLATE_ENDPOINT));
 
   for (const endpoint in boilerplate.endpoints) {
 
@@ -181,14 +184,11 @@ async function _createEndpointScenario(backstop,  boilerplate) {
 
 async function _createSubscenario(definedPaths) {
 
-  const template = require(R.template(ENDPOINT_SCENARIO))["max"];
-  delete template["$subscenarios"];
-
   for (const endpoint in definedPaths)
     for (const subscenario of definedPaths[endpoint].subscenarios)
-      await createFile(
-        R.cwdBoilerplate(endpoint, subscenario),
-        JSON.stringify(template, null, INMDENT_JSON)
+      await copyFile(
+        R.cwdBoilerplate(TEMPLATE_SUBSCENARIO),
+        R.cwdBoilerplate(endpoint, subscenario)
       );
 }
 

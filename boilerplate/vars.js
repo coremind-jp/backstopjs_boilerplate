@@ -13,13 +13,19 @@ const PUPPETEER_HOOK = "puppeteer_hook.js";
 /**
  * Template file name for common scenario
  */
-const COMMON_SCENARIO = "common.json";
+const TEMPLATE_COMMON = "common.json";
 
 
 /**
  * Template file name for endpoint scenario
  */
-const ENDPOINT_SCENARIO = "endpoint.json";
+const TEMPLATE_ENDPOINT = "template_endpoint.json";
+
+
+/**
+ * Template file name for endpoint scenario
+ */
+const TEMPLATE_SUBSCENARIO = "template_subscenario.json";
 
 
 /**
@@ -93,11 +99,12 @@ const INMDENT_JSON = 4;
 
 module.exports = {
   BOILERPLATE_CONFIG,
-  PUPPETEER_HOOK,
-  ENDPOINT_SCENARIO,
-  COMMON_SCENARIO,
   ENGINE_SCRIPT,
   INTEGRATION_EXAMPLE,
+  PUPPETEER_HOOK,
+  TEMPLATE_COMMON,
+  TEMPLATE_ENDPOINT,
+  TEMPLATE_SUBSCENARIO,
   COMMON_DIR,
   UNDEFINED_SCENARIO,
   INC_CODE,

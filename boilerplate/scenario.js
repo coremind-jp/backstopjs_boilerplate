@@ -3,7 +3,7 @@ const _ = require("lodash");
 
 const R = require("./resolver");
 
-const { INC_JSON, COMMON_DIR, COMMON_SCENARIO, UNDEFINED_SCENARIO,
+const { INC_JSON, COMMON_DIR, TEMPLATE_COMMON, UNDEFINED_SCENARIO,
   MERGE_PREFIX_PLUSE, MERGE_PREFIX_MINUS, MERGE_PREFIX_EQUAL, MERGE_PREFIX_REGEXP
  } = require("./vars");
 
@@ -80,7 +80,7 @@ function _applySkipFilter(boilerplate, when) {
  */
 function _createScenario(boilerplate, sId) {
 
-  const commonScenario = require(R.cwdBoilerplate(COMMON_DIR, COMMON_SCENARIO));
+  const commonScenario = require(R.cwdBoilerplate(COMMON_DIR, TEMPLATE_COMMON));
 
   const endpointScenario = sId.scenarioName === UNDEFINED_SCENARIO
     ? {}
