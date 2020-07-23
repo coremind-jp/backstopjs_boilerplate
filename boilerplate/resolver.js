@@ -16,12 +16,14 @@ class Resolver {
     return this._boilerplate;
   }
 
-  constructor(backstop) {
+  initialize(backstop) {
     this._backstop = path.resolve(process.cwd(), backstop);
 
     this._cwd = path.dirname(this._backstop);
 
     this._boilerplate = this.cwdBoilerplate(require("./vars").BOILERPLATE_CONFIG);
+
+    return this;
   }
 
   /**
@@ -66,4 +68,4 @@ class Resolver {
   }
 }
 
-module.exports = Resolver;
+module.exports = new Resolver();

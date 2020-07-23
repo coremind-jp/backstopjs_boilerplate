@@ -1,7 +1,7 @@
 const _ = require("lodash");
 const chokidar = require("chokidar");
 
-const Resolver = require("./boilerplate/resolver");
+const R = require("./boilerplate/resolver");
 const { initialize, syncTemplates } = require("./boilerplate/template");
 const { createScenarios } = require("./boilerplate/scenario");
 const { unlink, createFile } = require("./boilerplate/utils");
@@ -15,36 +15,35 @@ const { INMDENT_JSON } = require("./boilerplate/vars");
  */
 async function boilerplate(command, path) {
 
-  const resolver = new Resolver(path);
+  R.initialize(path);
 
   switch (command) {
 
     case "init":
-      await initialize(resolver);
+      await initialize();
       break;
 
     case "sync":
-      await syncTemplates(resolver);
+      await syncTemplates();
       break;
 
     case "watch":
       console.log("boilerplate now watching...");
 
       chokidar.watch(
-        [resolver.boilerplate, resolver.cwdBoilerplate("**/*.json")],
+        [R.boilerplate, R.cwdBoilerplate("**/*.json")],
         {}
-      ).on("change", _.debounce(
-        async () => syncTemplates(resolver),
-        200,
-        { leading: true, trailing: false }
+      ).on(
+        "change",
+        _.debounce(syncTemplates, 200, { leading: true, trailing: false }
       ));
       break;
 
     case "test":
     case "reference":
-      const backstop = require(resolver.backstop);
+      const backstop = require(R.backstop);
 
-      backstop.scenarios = await createScenarios(resolver, command);
+      backstop.scenarios = await createScenarios(command);
 
       await unlink(path);
 
