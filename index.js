@@ -1,3 +1,6 @@
+const _ = require("lodash");
+const chokidar = require("chokidar");
+
 const Resolver = require("./boilerplate/resolver");
 const { initialize, syncTemplates } = require("./boilerplate/template");
 const { createScenarios } = require("./boilerplate/scenario");
@@ -22,6 +25,19 @@ async function boilerplate(command, path) {
 
     case "sync":
       await syncTemplates(resolver);
+      break;
+
+    case "watch":
+      console.log("boilerplate now watching...");
+
+      chokidar.watch(
+        [resolver.boilerplate, resolver.cwdBoilerplate("**/*.json")],
+        {}
+      ).on("change", _.debounce(
+        async () => syncTemplates(resolver),
+        200,
+        { leading: true, trailing: false }
+      ));
       break;
 
     case "test":

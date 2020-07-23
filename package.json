@@ -25,6 +25,7 @@
   },
   "devDependencies": {},
   "dependencies": {
+    "chokidar": "^3.4.1",
     "commander": "^5.1.0",
     "lodash": "^4.17.19",
     "rimraf": "^3.0.2"

@@ -33,7 +33,7 @@
   "skip": {
     "when": "test",
     "endpoints": {
-      "/skip": [
+      "/skip_scenario": [
         "skip_a"
       ],
       "/skip_exists_scenario_files": [],
