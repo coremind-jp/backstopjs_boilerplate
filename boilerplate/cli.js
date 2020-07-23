@@ -2,7 +2,7 @@
 'use strict'
 
 function validateCommand(value) {
-  if (value.match(/(init|sync|test|reference)/))
+  if (value.match(/(init|sync|watch|test|reference)/))
     return value;
 
   throw new Error(`Unknown command "${value}"`);

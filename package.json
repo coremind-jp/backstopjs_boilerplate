@@ -1,6 +1,6 @@
 {
   "name": "backstopjs_boilerplate",
-  "version": "0.10.12",
+  "version": "0.10.13",
   "description": "boilerplate for backstopjs",
   "keywords": [
     "boilerplate",
@@ -25,6 +25,7 @@
   },
   "devDependencies": {},
   "dependencies": {
+    "chokidar": "^3.4.1",
     "commander": "^5.1.0",
     "lodash": "^4.17.19",
     "rimraf": "^3.0.2"
