@@ -1,21 +1,22 @@
 const URL = require("url").URL;
 const _ = require("lodash");
 
-const { sanitizeEndpoint } = require("./utils");
+const R = require("./resolver");
+
 const { INC_JSON, COMMON_DIR, COMMON_SCENARIO, UNDEFINED_SCENARIO,
   MERGE_PREFIX_PLUSE, MERGE_PREFIX_MINUS, MERGE_PREFIX_EQUAL, MERGE_PREFIX_REGEXP
  } = require("./vars");
 
+const { sanitizeEndpoint } = require("./utils");
 
 /**
  * Create scenario each endpoints, scenarios and viewports.
- * @param {Resolver} r Resolver instance
  * @param {string} when execute command
  */
-function createScenarios(r, when) {
+function createScenarios(when) {
 
-  const backstop = require(r.backstop);
-  const boilerplate = require(r.boilerplate);
+  const backstop = require(R.backstop);
+  const boilerplate = require(R.boilerplate);
 
   _pushAlias(boilerplate);
 
@@ -27,7 +28,6 @@ function createScenarios(r, when) {
       for (const viewport of backstop.viewports)
         result = result.concat(_createScenario(
           boilerplate,
-          r,
           new ScenarioID(endpoint, scenarioName, viewport)
         ));
 
@@ -76,16 +76,15 @@ function _applySkipFilter(boilerplate, when) {
 /**
  * Create a scenario.
  * @param {object} boilerplate config for boilerplate
- * @param {Resolver} r Resolver instance
  * @param {ScenarioID} sId ScenarioID instance
  */
-function _createScenario(boilerplate, r, sId) {
+function _createScenario(boilerplate, sId) {
 
-  const commonScenario = require(r.cwdBoilerplate(COMMON_DIR, COMMON_SCENARIO));
+  const commonScenario = require(R.cwdBoilerplate(COMMON_DIR, COMMON_SCENARIO));
 
   const endpointScenario = sId.scenarioName === UNDEFINED_SCENARIO
     ? {}
-    : require(r.cwdBoilerplate(sId.sanitizedEndpoint, `${sId.scenarioName}.json`));
+    : require(R.cwdBoilerplate(sId.sanitizedEndpoint, `${sId.scenarioName}.json`));
 
   const scenarios = [
     commonScenario.all || {},
@@ -94,7 +93,7 @@ function _createScenario(boilerplate, r, sId) {
     endpointScenario[sId.viewport.label] || {},
   ];
 
-  const subscenarios = _getSubscenarios(r, sId, scenarios);
+  const subscenarios = _getSubscenarios(sId, scenarios);
   
   const result = {
     label       : sId.label,
@@ -111,16 +110,15 @@ function _createScenario(boilerplate, r, sId) {
 
 /**
  * Require subsubscenarios from common.json and endpoint's scenairo.
- * @param {Resolver} r 
  * @param {ScenarioID} sId 
  * @param {array} scenarios 
  */
-function _getSubscenarios(r, sId, scenarios) {
+function _getSubscenarios(sId, scenarios) {
 
   return scenarios.map((scenario, i) => _.isArray(scenario[INC_JSON])
 
     ? scenario[INC_JSON].map(subscenarioName => (require(
-          r.cwdBoilerplate(i == 0 || i == 1
+          R.cwdBoilerplate(i == 0 || i == 1
             ? COMMON_DIR
             : sId.sanitizedEndpoint, `${subscenarioName}.json`)
         )))
