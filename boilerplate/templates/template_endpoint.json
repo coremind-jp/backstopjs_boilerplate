@@ -1,0 +1,18 @@
+{
+    "$scripts": [
+    ],
+    "$subscenarios": [
+    ],
+    "selectors": [
+    ],
+    "removeSelectors": [
+    ],
+    "keyPressSelectors": [
+    ],
+    "hoverSelectors": [
+    ],
+    "clickSelectors": [
+    ],
+    "hideSelectors": [
+    ]
+}

@@ -27,7 +27,7 @@ describe("Exists files and directories.", () => {
   describe("When after 'sync'", () => {
     [
       R.cwdBoilerplate(vars.COMMON_DIR),
-      R.cwdBoilerplate(vars.COMMON_DIR, vars.COMMON_SCENARIO),
+      R.cwdBoilerplate(vars.COMMON_DIR, vars.TEMPLATE_COMMON),
     ].forEach(path => {
       test(`Exists ${path}`, async () => expect(await exists(path)).toBe(true));
     })

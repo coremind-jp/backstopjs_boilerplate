@@ -40,16 +40,19 @@ __テスト実行__
 
 ## 目次
 - [:cl: コマンド一覧](#cmd)
+- [:wrench: javascript による backstopjs との統合](#integration)
 - [:hammer: 動機](#motivation)
 - [:scream: 問題点](#problem)
 - [:sunglasses: 拡張した機能](#implements)
   - [1. シナリオの自動生成](#toc1)
-    - [1-1. 設定ファイルを作成する](#toc1-1)
-      - [設定ファイル定義](#toc1-1-1)
-        - [templateType](#templateType)
-        - [test と reference](#toc1-1-1-3)
+    - [1-1. 設定ファイルを編集する](#toc1-1)
+      - [boilerplate.json](#toc1-1-1)
+        - [test と reference](#toc1-1-1-1)
         - [endpoints](#endpoints)
         - [skip](#skip)
+      - [template_endpoint.json](#toc1-1-2)
+      - [template_subscenario.json](#toc1-1-3)
+      - [{engine}_scripts.js](#toc1-1-4)
     - [1-2. テンプレートの生成](#toc1-2)
   - [2. 同一シナリオファイル内でビューポート毎の記述を可能にする](#toc2)
   - [3. 再利用可能なシナリオ](#toc3)
@@ -105,7 +108,7 @@ _backstop_data/boilerplate/_ 内のシナリオを全てマージして _backsto
 
 __{endpoint}:{scenario}\:{viewport}__
 
-__javascript による backstopjs との統合__
+## <span id="integration">:wrench: javascript による backstopjs との統合</span>
 
 backstopjs と boilerplate の連携を javascript で行いたい場合は、`init`コマンドで生成される _integration_example.js_ を参照。
 ```js
@@ -152,14 +155,23 @@ backstopjs 自体が提供するヘッドレスブラウザに対する操作は
 
 全てのエンドポイントに対するテンプレートなシナリオを設定ファイルとコマンドで自動生成する。
 
-#### <span id="toc1-1">1-1. 設定ファイルを作成する</span>
-`init` コマンドを実行すると、_backstop_data/_ 内に _boilerplate_ というディレクトリと _boilerplate.json_ というファイルを生成する。このファイルを編集して自動生成するテンプレートを制御する。またテンプレートの生成場所は _backstop_data/boilerplate/_ 内に生成される。
-
-##### <span id="toc1-1-1">設定ファイル定義</span>
+`init` コマンドを実行すると、_backstop_data/_ 以下にディレクトリとファイルを生成する。
 ```
-./backstop_data/boilerplate/boilerplate.json
+./backstop_data
+    /boilerplate
+        boilerplate.json
+        template_endpoint.json
+        template_subscenario.json
+        {engine}_scripts.js
+        /_common
+            common.json
+```
+
+#### <span id="toc1-1">1-1. 設定ファイルを編集する</span>
+
+##### <span id="toc1-1-1">boilerplate.json</span>
+```
 {
-  "templateType": "min",
   "test": "http://your.test.site.com",
   "reference": "http://your.reference.site.com",
   "endpoints": {
@@ -181,7 +193,6 @@ backstopjs 自体が提供するヘッドレスブラウザに対する操作は
   "skip": {
     "when": "reference",
     "endpoints": {
-
     }
   }
 }
@@ -189,13 +200,10 @@ backstopjs 自体が提供するヘッドレスブラウザに対する操作は
 
 単純にスクリーンショットを取るだけの場合は設定ファイルの _test_, _reference_ に URL、_endpoints_ に適当なエンドポイントと空の配列を記述するだけでテストが行える状態になる。
 
-###### templateType
-コマンドの実行によって生成されるシナリオの初期内容を変更するための値。使用可能なタイプは[テンプレート](https://github.com/coremind-jp/backstopjs_boilerplate/blob/master/boilerplate/templates/endpoint.json)を参照。
-
-###### <span id="toc1-1-1-3">test と reference</span>
+##### <span id="toc1-1-1-1">test と reference</span>
 backstopjs における同パラメータと同義。シナリオ毎に異なるドメインを有するシナリオは生成する際は個々のシナリオで _url_ を書き換える。
 
-###### endpoints
+##### endpoints
 key にはスクリーンショットを実行する対象パスを、value にはその対象パスに対するシナリオを配列で記述する。
 
 _index_ は特殊な値で `/` に対する定義と解釈される。
@@ -204,20 +212,60 @@ _index_ は特殊な値で `/` に対する定義と解釈される。
 
 空配列（例では _/empty_endpoint_）として定義すると`test` コマンドや `reference` コマンドで出力されるシナリオにのみ含まれ、テンプレートファイル自体は生成されない。
 
-###### skip
+##### skip
 _when_ には `test` または `reference` を指定する。指定された方でシナリオの生成が行われた場合 _skip_ 内の _endpoints_ とマッチするシナリオを除外する。boilerplate における `test`, `reference` の処理の違いはこの点のみなっている。backstopjs の _filter_ がホワイトリストなのに対して、このパラメータはブラックリストの役割をはたしている。
 
 空配列として定義するとそのエンドポイントに含まれる全てのシナリオ出力がスキップされる
 
+##### <span id="toc1-1-2">template_endpoint.json</span>
+エンドポイントを追加した際に初期定義として使用されるテンプレート。
+```json
+{
+    "$scripts": [],
+    "$subscenarios": [],
+    "selectors": [],
+    "removeSelectors": [],
+    "keyPressSelectors": [],
+    "hoverSelectors": [],
+    "clickSelectors": [],
+    "hideSelectors": []
+}
+```
+
+##### <span id="toc1-1-3">template_subscenario.json</span>
+サブシナリオを追加した際に初期定義として利用されるテンプレート。詳細については[「3-2. 同一エンドポイント内での再利用（サブシナリオ）」](#toc3-2)を参照。
+```json
+{
+    "$scripts": [],
+    "selectors": [],
+    "removeSelectors": [],
+    "keyPressSelectors": [],
+    "hoverSelectors": [],
+    "clickSelectors": [],
+    "hideSelectors": []
+}
+```
+
+##### <span id="toc1-1-4">{engine}_scripts.js</span>
+
+boilerplate における、スクリプトのエントリーポイント。詳細については[「4-1. 拡張操作の実装」](#toc4-1)を参照。
+```js
+module.exports = preimplements => ({
+    ...preimplements,
+    
+    // add more handlers here...
+});
+```
+
 #### <span id="toc1-2">1-2. テンプレートの生成</span>
 `sync` コマンドを実行するとその時点の _boilerplate.json_ の内容に従って _backstop_data/boilerplate/_ 下に各シナリオが生成される。
 
-__例__ [「設定ファイルを作成する」](#toc1-1)の定義による生成結果
+__例__ [「設定ファイルを編集する」](#toc1-1)の定義による生成結果
 ```
 ./backstop_data
     /boilerplate
         boilerplate.json
-        ${engine}_scripts.js
+        {engine}_scripts.js
         /_common
             common.json
         /index
@@ -305,7 +353,9 @@ __例__ [「設定ファイルを作成する」](#toc1-1)の定義による生�
 
 #### <span id="toc3-3">3-3. サイト全体を通した再利用</span>
 
-`init` コマンドで生成された _common.js_ 。ここに記述した操作は全てのシナリオに反映される。
+`init` コマンドで生成される _common.js_ 。ここに記述した操作は全てのシナリオに反映される。
+
+グローバルスコープに対する設定は _backstop.json_ でも行えるのでどちらを利用するかの判断は任意としている。
 
 #### <span id="toc3-4">3-4. シナリオの適用順序</span>
 
@@ -391,12 +441,12 @@ __例__
   
 #### <span id="toc4-1">4-1. 拡張操作の実装</span>
 
-boilerplate における engine_scripts のエントリーポイントは onBefore, onReady ではなく、`init` コマンドで生成された _\${engine}\_scripts.js_ となる。 _${engine}_ はテストに使用しているエンジンの名前となる。（デフォルトではpuppeteer）
+boilerplate における engine_scripts のエントリーポイントは onBefore, onReady ではなく、`init` コマンドで生成された _\{engine}\_scripts.js_ となる。 _{engine}_ はテストに使用しているエンジンの名前となる。（デフォルトではpuppeteer）
 onBefore, onReady は `init` コマンド実行時にシナリオから制御するためのフック関数へ書き換えられる。
 
 ※その他のエンジンについての切り分けも考えて作っているが、自分自身が puppeteer 以外のエンジンを利用していないので他のエンジンは現状ではサポートしていない。
 
-[_\${engine}\_scripts.js_](https://github.com/coremind-jp/backstopjs_boilerplate/blob/master/boilerplate/templates/engine_scripts.js) を見ると分かるが、このモジュール関数は _preimplements_ 引数が渡されている。このオブジェクトの中には backstopjs が提供する _clickAndHoverHelper_ , _loadCookies_ , _overrideCSS_ の実装が含まれる。（_ignoreCSP_ , _interceptImages_ については追加のパッケージが必要なので含めていない） もしこれらの実行タイミングを制御したいのであればこのオブジェクトから取り出して任意のタイミングで呼び出すことができる。
+[_\{engine}\_scripts.js_](https://github.com/coremind-jp/backstopjs_boilerplate/blob/master/boilerplate/templates/engine_scripts.js) を見ると分かるが、このモジュール関数は _preimplements_ 引数が渡されている。このオブジェクトの中には backstopjs が提供する _clickAndHoverHelper_ , _loadCookies_ , _overrideCSS_ の実装が含まれる。（_ignoreCSP_ , _interceptImages_ については追加のパッケージが必要なので含めていない） もしこれらの実行タイミングを制御したいのであればこのオブジェクトから取り出して任意のタイミングで呼び出すことができる。
 
 再利用を意識した単位で記述すれば1ファイルでも十分だと思うが、気になる場合は _preimplements_ と同様に意味ある塊ごとに外部ファイル化し、後からこのファイルのモジュールに組み込む。
 
