@@ -117,15 +117,15 @@ describe("Feature Template Generation.", () => {
 
       const commonPath = R.cwdBoilerplate(vars.COMMON_DIR, vars.TEMPLATE_COMMON);
       const common = require(commonPath);
+      const before = common.all[vars.INC_JSON];
 
       const subscenarioName = "dummy_subscenario";
       const subscenarioPath = R.cwdBoilerplate(vars.COMMON_DIR, `${subscenarioName}.json`);
 
-      common.all[vars.INC_JSON] = [subscenarioName];
-
       expect(await exists(subscenarioPath)).toBe(false);
 
-      await createFile(commonPath, JSON.stringify(common, null, vars.INMDENT_JSON), true);
+      common.all[vars.INC_JSON] = [subscenarioName];
+      
       await syncTemplates();
 
       expect(await exists(subscenarioPath)).toBe(true);
@@ -134,8 +134,8 @@ describe("Feature Template Generation.", () => {
       const expected = require(R.cwdBoilerplate(vars.TEMPLATE_SUBSCENARIO));
 
       expect(generated).toMatchObject(expected);
-
-      await createFile(commonPath, JSON.stringify(common, null, vars.INMDENT_JSON), true);
+      
+      common.all[vars.INC_JSON] = before;
     });
   });
 });
