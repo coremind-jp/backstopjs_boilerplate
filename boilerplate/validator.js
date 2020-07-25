@@ -5,7 +5,7 @@ function validateConfigure(boilerplate, type = "error") {
 
   const notify = createNotify(type);
 
-  validateEndpoints(boilerplate, notify);
+  validateEndpoints(boilerplate, false, notify);
 
   if ("skip" in boilerplate)
     validateSkip(boilerplate.skip, notify);
@@ -14,7 +14,7 @@ function validateConfigure(boilerplate, type = "error") {
 }
 
 
-function validateEndpoints(object, notify) {
+function validateEndpoints(object, allowEmpty, notify) {
 
   if (!("endpoints" in object))
     notify(`Undefined endpoints.`);
@@ -22,7 +22,7 @@ function validateEndpoints(object, notify) {
   if (!_.isPlainObject(object.endpoints))
     notify(`Key "endpoints" must be object.`);
 
-  if (_.keys(object.endpoints).length === 0)
+  if (_.keys(object.endpoints).length === 0 && !allowEmpty)
     notify(`Endpoints is empty.`);
 
   for (const endpoint in object.endpoints) {
@@ -53,7 +53,7 @@ function validateSkip(skip, notify) {
   if (skip.when !== "test" && skip.when !== "reference")
     notify(`"when" key available value is test or reference only.`);
 
-  validateEndpoints(skip, notify);
+  validateEndpoints(skip, true, notify);
 }
 
 

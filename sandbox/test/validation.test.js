@@ -65,4 +65,31 @@ describe("Feature Configure validation.", () => {
       }).toThrowError(`scenario name is empty.`);
     });
   });
+
+  describe("Endpoints validation.", () => {
+
+    test(`Require "when" parameter if using "skip".`, () => {
+      expect(() => {
+        validateConfigure({
+          endpoints: {
+            "some_endpoint": ["some_scenario"]
+          },
+          skip: {}
+        })
+      }).toThrowError(`Require "when" parameter if using "skip".`);
+    });
+
+    test(`"when" key available value is test or reference only.`, () => {
+      expect(() => {
+        validateConfigure({
+          endpoints: {
+            "some_endpoint": ["some_scenario"]
+          },
+          skip: {
+            when: "valid value",
+          }
+        })
+      }).toThrowError(`"when" key available value is test or reference only.`);
+    });
+  });
 });
