@@ -2,7 +2,7 @@ const _ = require("lodash");
 
 const { createScenarios } = require("backstopjs_boilerplate/boilerplate/scenario");
 const { UNDEFINED_SCENARIO } = require("backstopjs_boilerplate/boilerplate/vars");
-const R = require("backstopjs_boilerplate/boilerplate//resolver");
+const R = require("backstopjs_boilerplate/boilerplate/resolver");
 
 R.initialize("backstop.json");
 const backstop = require(R.backstop);
