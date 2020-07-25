@@ -95,10 +95,8 @@ describe("Feature Template Generation.", () => {
       expect(await exists(endpointDirPath)).toBe(false);
       expect(await exists(scenarioPath)).toBe(false);
 
-      const boilerplateClone = _.cloneDeep(boilerplate);
-      boilerplateClone.endpoints[endopointName] = [scenarioName];
-
-      await syncTemplates(boilerplateClone);
+      boilerplate.endpoints[endopointName] = [scenarioName];
+      await syncTemplates();
 
       expect(await exists(endpointDirPath)).toBe(true);
       expect(await exists(scenarioPath)).toBe(true);
@@ -117,7 +115,6 @@ describe("Feature Template Generation.", () => {
 
       const commonPath = R.cwdBoilerplate(vars.COMMON_DIR, vars.TEMPLATE_COMMON);
       const common = require(commonPath);
-      const before = common.all[vars.INC_JSON];
 
       const subscenarioName = "dummy_subscenario";
       const subscenarioPath = R.cwdBoilerplate(vars.COMMON_DIR, `${subscenarioName}.json`);
@@ -125,7 +122,6 @@ describe("Feature Template Generation.", () => {
       expect(await exists(subscenarioPath)).toBe(false);
 
       common.all[vars.INC_JSON] = [subscenarioName];
-      
       await syncTemplates();
 
       expect(await exists(subscenarioPath)).toBe(true);
@@ -134,8 +130,6 @@ describe("Feature Template Generation.", () => {
       const expected = require(R.cwdBoilerplate(vars.TEMPLATE_SUBSCENARIO));
 
       expect(generated).toMatchObject(expected);
-      
-      common.all[vars.INC_JSON] = before;
     });
   });
 });
