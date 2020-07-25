@@ -10,7 +10,7 @@ const { INMDENT_JSON } = require("./boilerplate/vars");
 
 /**
  * @see https://github.com/coremind-jp/backstopjs_boilerplate
- * @param {string} command init | sync | test | reference
+ * @param {string} command init | sync | watch | test | reference
  * @param {string} path path to backstop.json
  */
 async function boilerplate(command, path) {
@@ -53,3 +53,5 @@ async function boilerplate(command, path) {
 }
 
 module.exports = boilerplate;
+
+boilerplate("", "backstop.json");
