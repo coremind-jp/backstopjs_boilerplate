@@ -2,7 +2,7 @@ const _ = require("lodash");
 
 const { createScenarios } = require("backstopjs_boilerplate/boilerplate/scenario");
 const { UNDEFINED_SCENARIO } = require("backstopjs_boilerplate/boilerplate/vars");
-const R = require("backstopjs_boilerplate/boilerplate//resolver");
+const R = require("backstopjs_boilerplate/boilerplate/resolver");
 
 R.initialize("backstop.json");
 const backstop = require(R.backstop);
@@ -23,7 +23,7 @@ let def = (() => {
 })();
 
 
-describe("ScenarioTest", () => {
+describe("Feature boilerplate.json and custom prefix parsing", () => {
 
   beforeEach(async () => {
     scenarios = createScenarios();

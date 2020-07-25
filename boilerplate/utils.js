@@ -1,4 +1,5 @@
 const fs = require("fs");
+const R = require("./resolver");
 
 
 /**
@@ -87,10 +88,11 @@ function _writeFile(path, data) {
  * @param {*} path 
  * @param {*} data 
  */
- async function createFile(path, data) {
-  if (!await exists(path)) {
-    if  (!await _writeFile(path, data))
-      console.log(`[file created] ${path}`);
+async function createFile(path, data, overwrite = false) {
+  if (overwrite && !await _writeFile(path, data)) {
+    console.log(`[file updated] ${path}`);
+  } else if (!await exists(path) && !await _writeFile(path, data)) {
+    console.log(`[file created] ${path}`);
   }
 }
 
@@ -159,12 +161,23 @@ async function exists(path, log = false) {
 
 
 function sanitizeEndpoint(endpoint) {
-  return endpoint
-    .replace(/\/#/g, "-")
-    .replace(/\//g, "_")
-    .replace(/#/g, "-")
-    .replace(/_+$/, "")
-    .replace(/^_+/, "");
+
+  const PATH_LENGTH_LIMIT = 247;
+  const segment = 1;
+  const pathLength = R.cwdBoilerplate().length +  segment +  endpoint.length;
+
+  return PATH_LENGTH_LIMIT < pathLength
+
+    ? require('crypto')
+        .createHash("md5")
+        .update(endpoint, "utf8")
+        .digest("hex")
+
+    : endpoint
+        .replace(/[\/?]/g, "_")
+        .replace(/[\\:;<|>*"]/g, "")
+        .replace(/_+$/, "")
+        .replace(/^_+/, "");
 }
 
 
