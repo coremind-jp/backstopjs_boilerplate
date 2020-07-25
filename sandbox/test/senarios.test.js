@@ -23,7 +23,7 @@ let def = (() => {
 })();
 
 
-describe("ScenarioTest", () => {
+describe("Feature boilerplate.json and custom prefix parsing", () => {
 
   beforeEach(async () => {
     scenarios = createScenarios();
