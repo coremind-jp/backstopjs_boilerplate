@@ -87,10 +87,11 @@ function _writeFile(path, data) {
  * @param {*} path 
  * @param {*} data 
  */
- async function createFile(path, data) {
-  if (!await exists(path)) {
-    if  (!await _writeFile(path, data))
-      console.log(`[file created] ${path}`);
+async function createFile(path, data, overwrite = false) {
+  if (overwrite && !await _writeFile(path, data)) {
+    console.log(`[file updated] ${path}`);
+  } else if (!await exists(path) && !await _writeFile(path, data)) {
+    console.log(`[file created] ${path}`);
   }
 }
 
