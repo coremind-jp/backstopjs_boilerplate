@@ -35,7 +35,7 @@ async function boilerplate(command, path) {
         {}
       ).on(
         "change",
-        _.debounce(syncTemplates, 200, { leading: true, trailing: false }
+        _.debounce(() => syncTemplates(), 200, { leading: true, trailing: false }
       ));
       break;
 
