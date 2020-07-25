@@ -10,8 +10,7 @@ const {
 } = require("./vars");
 
 const {
-  readdir, mkdir, copyFile, createFile, unlink,
-  sanitizeEndpoint
+  readdir, mkdir, copyFile, createFile, sanitizeEndpoint
 } = require("./utils");
 
 
@@ -39,20 +38,20 @@ async function initialize() {
 /**
  * Synchronize between boilerplate.json and directories.
  */
-async function syncTemplates() {
+async function syncTemplates(boilerplate) {
 
   delete require.cache[R.boilerplate];
 
-  const backstop = require(R.backstop);
-  const boilerplate = require(R.boilerplate);
+  const { viewports } = require(R.backstop);
+  const { endpoints } = boilerplate || require(R.boilerplate);
   
-  await _createCommonScenario(backstop);
-  await _createEndpointScenario(backstop, boilerplate);
+  await _createCommonScenario(viewports);
+  await _createEndpointScenario(viewports, endpoints);
 
-  const definedPaths = _fetchScenarioPaths(backstop, boilerplate);
+  const definedPaths = _fetchScenarioPaths(viewports, endpoints);
 
   await _createSubscenario(definedPaths);
-  _removeDirectories(definedPaths);
+  await _removeDirectories(definedPaths);
 };
 
 
@@ -60,48 +59,51 @@ async function _replaceHook(prefix, file) {
 
   await copyFile(R.cwdPuppetScript(`${file}.js`), R.cwdPuppetScript(`${file}.js.backup`));
 
-  await unlink(R.cwdPuppetScript(`${file}.js`));
-
   await createFile(
     R.cwdPuppetScript(`${file}.js`),
-    `module.exports = require("./${PUPPETEER_HOOK}")("${prefix}", "${file}")`
+    `module.exports = require("./${PUPPETEER_HOOK}")("${prefix}", "${file}")`,
+    true
   );
 };
 
 
-function _removeDirectories(definedPaths) {
+async function _removeDirectories(definedPaths) {
 
-  readdir(R.cwdBoilerplate()).then(endpoints => endpoints  
-    .filter(endpoint => endpoint.isDirectory())
-    .forEach(endpoint => endpoint.name in definedPaths
+  let endpoints = await readdir(R.cwdBoilerplate());
+  endpoints = endpoints.filter(endpoint => endpoint.isDirectory());
 
-      ? readdir(R.cwdBoilerplate(endpoint.name)).then(scenarios => scenarios
-          .filter(scenario => scenario.isFile()
-            && definedPaths[endpoint.name].scenarios.indexOf(scenario.name) == -1
-            && definedPaths[endpoint.name].subscenarios.indexOf(scenario.name) == -1)
-          .forEach(scenario =>
-            rimraf(R.cwdBoilerplate(endpoint.name, scenario.name), () =>
-              console.log(`[file removed] ${scenario.name}`)
-            )))
+  for (const endpoint of endpoints) {
+    if (endpoint.name in definedPaths) {
+      
+      const scenarios = await readdir(R.cwdBoilerplate(endpoint.name));
+      scenarios
+        .filter(scenario => scenario.isFile()
+        && definedPaths[endpoint.name].scenarios.indexOf(scenario.name) == -1
+        && definedPaths[endpoint.name].subscenarios.indexOf(scenario.name) == -1)
+        .forEach(scenario => {
+          rimraf.sync(R.cwdBoilerplate(endpoint.name, scenario.name));
+          console.log(`[file removed] ${scenario.name}`);
+        })
 
-      : rimraf(R.cwdBoilerplate(endpoint.name), () =>
-          console.log(`[directory removed] ${endpoint.name}`)
-        ))
-  );
+    } else {
+      rimraf.sync(R.cwdBoilerplate(endpoint.name));
+      console.log(`[directory removed] ${endpoint.name}`);
+    }
+  }
 }
 
 
-function _fetchScenarioPaths(backstop, boilerplate) {
+function _fetchScenarioPaths(viewports, endpoints) {
 
   const result = {};
   const wrapper = (dir, file) =>
-    _fetchSubscenarioPaths(result, dir, file, backstop.viewports);
+    _fetchSubscenarioPaths(result, dir, file, viewports);
   
   wrapper(COMMON_DIR, TEMPLATE_COMMON);
 
-  for (const endpoint in boilerplate.endpoints)
-    if (0 < boilerplate.endpoints[endpoint].length)
-      for (const scenarioName of boilerplate.endpoints[endpoint])
+  for (const endpoint in endpoints)
+    if (0 < endpoints[endpoint].length)
+      for (const scenarioName of endpoints[endpoint])
         wrapper(sanitizeEndpoint(endpoint), `${scenarioName}.json`);
 
   return result;
@@ -133,7 +135,7 @@ function _fetchSubscenarioPaths(result, endpoint, scenarioName, viewports) {
 }
 
 
-async function _createCommonScenario(backstop) {
+async function _createCommonScenario(viewports) {
 
   const template = require(R.template(TEMPLATE_COMMON));
 
@@ -142,7 +144,7 @@ async function _createCommonScenario(backstop) {
   await createFile(
     R.cwdBoilerplate(COMMON_DIR, TEMPLATE_COMMON),
     JSON.stringify(
-      backstop.viewports.reduce((json, viewport) => {
+      viewports.reduce((json, viewport) => {
         json[viewport.label] = { userAgent: "" };
         return json;
       }, template),
@@ -153,25 +155,25 @@ async function _createCommonScenario(backstop) {
 }
 
 
-async function _createEndpointScenario(backstop,  boilerplate) {
+async function _createEndpointScenario(viewports, endpoints) {
 
   const template = require(R.cwdBoilerplate(TEMPLATE_ENDPOINT));
 
-  for (const endpoint in boilerplate.endpoints) {
-
-    const endpoints = boilerplate.endpoints[endpoint];
-
-    if (!endpoints || endpoints.length === 0)
+  for (const endpoint in endpoints) {
+    if (!_.isArray(endpoints[endpoint]) || endpoints[endpoint].length === 0)
       continue;
 
     const sanitized = sanitizeEndpoint(endpoint);
     await mkdir(R.cwdBoilerplate(sanitized));
 
-    for (const scenarioName of endpoints)
+    for (const scenarioName of endpoints[endpoint])
       await createFile(
         R.cwdBoilerplate(sanitized, `${scenarioName}.json`),
         JSON.stringify(
-          backstop.viewports.reduce((json, viewport) => {
+          [
+            { label: "all" },
+            ...viewports
+          ].reduce((json, viewport) => {
             json[viewport.label] = template;
             return json;
           }, {}),
