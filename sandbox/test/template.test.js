@@ -98,7 +98,6 @@ describe("Feature Template Generation.", () => {
       const boilerplateClone = _.cloneDeep(boilerplate);
       boilerplateClone.endpoints[endopointName] = [scenarioName];
 
-      await createFile(R.boilerplate, JSON.stringify(boilerplateClone), true);
       await syncTemplates(boilerplateClone);
 
       expect(await exists(endpointDirPath)).toBe(true);
@@ -126,7 +125,7 @@ describe("Feature Template Generation.", () => {
 
       expect(await exists(subscenarioPath)).toBe(false);
 
-      await createFile(commonPath, JSON.stringify(common), true);
+      await createFile(commonPath, JSON.stringify(common, null, vars.INMDENT_JSON), true);
       await syncTemplates();
 
       expect(await exists(subscenarioPath)).toBe(true);
@@ -135,6 +134,8 @@ describe("Feature Template Generation.", () => {
       const expected = require(R.cwdBoilerplate(vars.TEMPLATE_SUBSCENARIO));
 
       expect(generated).toMatchObject(expected);
+
+      await createFile(commonPath, JSON.stringify(common, null, vars.INMDENT_JSON), true);
     });
   });
 });
