@@ -8,6 +8,8 @@ const { INC_JSON, COMMON_DIR, TEMPLATE_COMMON, UNDEFINED_SCENARIO,
  } = require("./vars");
 
 const { sanitizeEndpoint } = require("./utils");
+const validateConfigure = require("./validator");
+
 
 /**
  * Create scenario each endpoints, scenarios and viewports.
@@ -16,7 +18,7 @@ const { sanitizeEndpoint } = require("./utils");
 function createScenarios(when) {
 
   const backstop = require(R.backstop);
-  const boilerplate = require(R.boilerplate);
+  const boilerplate = validateConfigure(require(R.boilerplate));
 
   _pushAlias(boilerplate);
 

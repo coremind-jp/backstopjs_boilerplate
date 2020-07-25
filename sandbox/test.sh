@@ -20,5 +20,6 @@ cp -rf $(cd $(dirname $0); pwd)/test_scenario/boilerplate $(cd $(dirname $0); pw
 
 bsbl test;
 
+jest ./test/validation.test.js;
 jest ./test/senarios.test.js;
 jest ./test/template.test.js;

@@ -13,6 +13,8 @@ const {
   readdir, mkdir, copyFile, createFile, sanitizeEndpoint
 } = require("./utils");
 
+const validateConfigure = require("./validator");
+
 
 /**
  * initialize boilerplate.
@@ -43,7 +45,7 @@ async function syncTemplates(boilerplate) {
   delete require.cache[R.boilerplate];
 
   const { viewports } = require(R.backstop);
-  const { endpoints } = boilerplate || require(R.boilerplate);
+  const { endpoints } = validateConfigure(boilerplate || require(R.boilerplate));
   
   await _createCommonScenario(viewports);
   await _createEndpointScenario(viewports, endpoints);

@@ -1,15 +1,15 @@
-const _ = require("lodash");
-
-const { exists, sanitizeEndpoint, mkdir, createFile } = require("backstopjs_boilerplate/boilerplate/utils");
-const { syncTemplates } = require("backstopjs_boilerplate/boilerplate/template");
-const vars = require("backstopjs_boilerplate/boilerplate/vars");
-const R = require("backstopjs_boilerplate/boilerplate/resolver");
-
-R.initialize("backstop.json");
-const backstop = require(R.backstop);
-const boilerplate = require(R.boilerplate);
-
 describe("Feature Template Generation.", () => {
+  
+  const _ = require("lodash");
+
+  const { exists, sanitizeEndpoint, mkdir, createFile } = require("backstopjs_boilerplate/boilerplate/utils");
+  const { syncTemplates } = require("backstopjs_boilerplate/boilerplate/template");
+  const vars = require("backstopjs_boilerplate/boilerplate/vars");
+  const R = require("backstopjs_boilerplate/boilerplate/resolver");
+
+  R.initialize("backstop.json");
+  const backstop = require(R.backstop);
+  const boilerplate = require(R.boilerplate);
 
   describe("Should exist files / directories when after 'init'", () => {
     [
